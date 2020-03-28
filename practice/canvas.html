@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+  </style>
+</head>
+<body>
+<canvas id="canva" width="500" height="500"></canvas>
+<img src="/temp/timg.png" alt="" id="tu" style="width: 0;">
+<script>
+  let c = document.getElementById('canva');
+  let ctx = c.getContext('2d');
+  ctx.fillStyle = '#0000ff';
+  ctx.fillRect(100, 100, 300, 200);
+
+  ctx.moveTo(0, 500);
+  ctx.lineTo(500, 0);
+  ctx.stroke();
+
+  let grd = ctx.createRadialGradient(250, 250, 0, 250, 250, 100);
+  grd.addColorStop(0, 'yellow');
+  grd.addColorStop(1, 'purple');
+  ctx.fillStyle = grd;
+  ctx.beginPath();
+  ctx.arc(250, 250, 100, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.font = '50px Arial';
+  ctx.fillStyle = 'red';
+  ctx.textBaseline = 'top';
+  ctx.fillText('abcd中国字', 0, 0, 500);
+
+  ctx.font = '50px Arial';
+  ctx.strokeText('abcd中国字', 0, 50);
+
+  grd = ctx.createLinearGradient(100, 0, 500, 0);
+  grd.addColorStop(0.2, 'red');
+  grd.addColorStop(1, 'green');
+  ctx.fillStyle = grd;
+  ctx.fillRect(100, 350, 500, 500);
+
+  let tu = document.getElementById('tu');
+  ctx.drawImage(tu, 0, 0, 500, 500, 50, 50, 200, 200);
+</script>
+</body>
+</html>

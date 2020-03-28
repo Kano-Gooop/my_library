@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <style>
+    .classify > div {
+      border-bottom: 1px solid #666;
+      background-color: white;
+      margin-bottom: 15px;
+      padding: 15px;
+    }
+  </style>
+</head>
+<body>
+  <div class="classify">
+    <div>
+      <div class="title">玩具</div>
+      <a href="/toy/jiu-gong.html">九宫格</a>
+    </div>
+    <div>
+      <div class="title">工具</div>
+      <a href="/tool/text-pick.html">文字提取器</a>
+    </div>
+    <div>
+      <div class="title">js插件</div>
+      <a href="/plugin/Video.js/demo.html">Video.js</a>
+    </div>
+    <div>
+      <div class="title">文档</div>
+      <a href="/document/ofen.html">常用写法</a>
+    </div>
+  </div>
+
+  <canvas id="live2dcanvas" width="200" height="440" style="position: fixed; opacity: 1; right: 0; bottom: 0; z-index: 99999; pointer-events: none;"></canvas>
+
+  <script type="text/javascript" charset="utf-8"  src="http://xiaowiba.com/live2d_models/L2Dwidget.min.js"></script>
+  <script type="text/javascript" charset="utf-8"  src="http://xiaowiba.com/live2d_models/L2Dwidget.0.min.js"></script>
+  <script type="text/javascript">
+    L2Dwidget.init({"display": {
+        "superSample": 2,
+        "width": 200,
+        "height": 400,
+        "position": "right",
+        "hOffset": 0,
+        "vOffset": 0
+      }
+    });
+  </script>
+
+  <script src="js/kano-common.js"></script>
+</body>
+</html>

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>文字提取器</title>
+  <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+  <style>
+    body {
+      padding: 20px;
+      background: #eee;
+    }
+
+    .origin-box {
+    }
+
+    .origin-box .before .el-textarea__inner {
+      padding: 10px;
+    }
+
+    .after-box {
+      position: relative;
+      margin-top: 15px;
+    }
+
+    .after-box .after .el-textarea__inner {
+      padding: 10px;
+    }
+
+    .after-box .copy-btn {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+    }
+
+    .method {
+      border: 5px double #ddd;
+      margin-top: 15px;
+      padding: 10px;
+      background: #fff;
+    }
+
+    .history {
+      margin-top: 15px;
+      background: #fff;
+      border: 1px solid #ddd;
+      padding: 10px;
+    }
+
+    .history .title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .history .title .zuo {
+      font-size: 16px;
+    }
+
+    .history .list {
+    }
+
+    .history .list .list-item {
+      border-bottom: 1px solid #ddd;
+      padding: 10px 0;
+      line-height: 1.5;
+      font-size: 14px;
+    }
+
+    .history .list .list-item:last-child {
+      border-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .history .list .list-item .st {
+      color: #666;
+      font-size: 14px;
+    }
+
+    .history .list .list-item .text {
+      margin-top: 5px;
+      white-space: pre-line;
+    }
+
+    [v-clock] {
+      visibility: hidden;
+    }
+  </style>
+</head>
+<body>
+<div id="app" v-clock>
+  <div class="origin-box">
+    <el-input placeholder="要提取的文本" type="textarea" :autosize="{ minRows: 5}" v-model="origin" class="before">
+    </el-input>
+  </div>
+
+  <div class="after-box">
+    <el-input placeholder="提取文本" type="textarea" :autosize="{ minRows: 5}" v-model="after" class="after">
+    </el-input>
+    <el-button type="primary" size="mini" class="copy-btn">复制</el-button>
+  </div>
+
+  <div class="method">
+    <el-button @click="del_zh" type="primary" size="small">提取非中文</el-button>
+    <el-button @click="del_nzh" type="primary" size="small">提取中文</el-button>
+    <el-button @click="get_tel" type="primary" size="small">提取电话</el-button>
+    <el-button @click="get_number" type="primary" size="small">提取数字</el-button>
+    <el-button @click="get_word" type="primary" size="small">提取英文单词</el-button>
+    <el-button @click="get_ip" type="primary" size="small">提取IP地址</el-button>
+  </div>
+  <div class="history" v-show="history.length > 0">
+    <div class="title">
+      <div class="zuo">提取历史</div>
+      <el-button @click="clear_history" type="primary" size="mini">清空历史</el-button>
+    </div>
+    <div class="list">
+      <div class="list-item" v-for="(item, index) in history">
+        <div class="st">第{{history.length - index}}次</div>
+        <div class="text">{{item}}</div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="/plugin/clipboard.min.js"></script>
+<script src="/js/vue.js"></script>
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+<script>
+  let app = new Vue({
+    el: '#app',
+    data: {
+      origin: '',
+      after: '',
+      history: [],
+
+      clipboard: null  // 剪贴板对象
+    },
+    created() {
+      let history = localStorage.getItem('history');
+      if (history) {
+        this.history = JSON.parse(history);
+      }
+    },
+    mounted() {
+      this.clipboard = new ClipboardJS('.copy-btn', {
+        text: () => {
+          if (this.after) {
+            this.$message.success('已复制');
+            return this.after;
+          }
+        }
+      });
+    },
+    methods: {
+      // 提取非中文（去除中文）
+      del_zh() {
+        this.after = this.origin.replace(/[\u4e00-\u9fa5]/g, '');
+        this._after();
+      },
+      // 提取中文（去除非中文）
+      del_nzh() {
+        this.after = this.origin.replace(/[^\u4e00-\u9fa5]/g, '');
+        this._after();
+      },
+      // 提取电话
+      get_tel() {
+        let data_list = this.origin.match(/1\d{10}/g);
+        this.after = data_list ? data_list.join('\n') : '';
+        this._after();
+      },
+      // 提取数字
+      get_number() {
+        let data_list = this.origin.match(/\d+/g);
+        this.after = data_list ? data_list.join('\n') : '';
+        this._after();
+      },
+      // 提取英文单词
+      get_word() {
+        let data_list = this.origin.match(/[a-zA-Z]+/g);
+        this.after = data_list ? data_list.join('\n') : '';
+        this._after();
+      },
+      // 提取IP地址
+      get_ip() {
+        let data_list = this.origin.match(/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/g);
+        this.after = data_list ? data_list.join('\n') : '';
+        this._after();
+      },
+      _after() {
+        if (this.after) {
+          this.history.unshift(this.after);
+          localStorage.setItem('history', JSON.stringify(this.history));
+        }
+      },
+      // 清空历史
+      clear_history() {
+        this.history = [];
+        localStorage.clear();
+      }
+    }
+  });
+</script>
+</body>
+</html>

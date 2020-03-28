@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>常用写法</title>
+  <style>
+    .ofen-list li:first-child {
+      margin-top: 0;
+    }
+
+    .ofen-list li {
+      margin-top: 20px;
+    }
+
+    .ofen-list code {
+      background: #d0d0d0;
+      padding: 10px;
+      margin-top: 10px;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+<ol class="ofen-list">
+  <li>
+    <div class="title">获取一个重复n次的字符串</div>
+    <code>
+      new Array(11).join('abc'); // 'abc'重复10次（注意Array内要多写一次）
+    </code>
+  </li>
+</ol>
+</body>
+</html>

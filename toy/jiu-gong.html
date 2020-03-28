@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+  <style>
+    .gong {
+      border: 1px solid #333;
+      border-collapse: collapse;
+    }
+
+    .gong td {
+      width: 50px;
+      height: 50px;
+      border: 1px solid #333;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+<div id="app">
+  <el-input placeholder="请输入size" @keydown.native.enter="start" v-model.number="size" class="input-with-select" style="width: 200px; padding-bottom: 15px;">
+    <el-button slot="append" icon="el-icon-search" @click="start"></el-button>
+  </el-input>
+
+  <table class="gong" :style="{fontSize: fz}">
+    <tr v-for="tr in table">
+      <td v-for="td in tr">
+        {{td}}
+      </td>
+    </tr>
+  </table>
+</div>
+<script src="/js/vue.js"></script>
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+<script>
+  let app = new Vue({
+    el: '#app',
+    data: {
+      number: 1,
+      size: 3,
+      coord: [],
+      table: []
+    },
+    computed: {
+      fz() {
+        if (this.size < 32) {
+          return '16px';
+        } else if (this.size < 100) {
+          return  '15px';
+        } else {
+          return '14px';
+        }
+      }
+    },
+    created() {
+      this.start();
+    },
+    methods: {
+      start() {
+        this.number = 1;
+        this.init_table();
+        while (!this.fill()) {
+        }
+      },
+      // 初始化表格
+      init_table() {
+        let table = [];
+        for (let i = 0; i < this.size; i++) {
+          table[i] = [];
+          for (let j = 0; j < this.size; j++) {
+            table[i].push('');
+          }
+        }
+        this.coord = [0, (this.size - 1) / 2];
+        table[this.coord[0]][this.coord[1]] = this.number;
+        this.number++;
+        this.table = table;
+      },
+      // 填充表格
+      fill() {
+        let v_coord = this.coord[0] - 1;  // 纵坐标
+        let h_coord = this.coord[1] - 1;  // 横坐标
+        let done = true;
+
+        if (v_coord === -1 && h_coord === -1) {
+          h_coord++;
+          v_coord += 2;
+          if (!this.table[v_coord][h_coord]) {
+            this.tian(v_coord, h_coord);
+            done = false;
+          }
+        } else if (v_coord >= 0 && h_coord >= 0) {
+          if (this.table[v_coord][h_coord]) {
+            h_coord++;
+            v_coord += 2;
+
+            if (v_coord !== this.size) {
+              if (!this.table[v_coord][h_coord]) {
+                this.tian(v_coord, h_coord);
+                done = false;
+              }
+            }
+          } else {
+            this.tian(v_coord, h_coord);
+            done = false;
+          }
+        } else if (v_coord < 0) {
+          v_coord = this.size - 1;
+          if (!this.table[v_coord][h_coord]) {
+            this.tian(v_coord, h_coord);
+            done = false;
+          }
+        } else if (h_coord < 0) {
+          h_coord = this.size - 1;
+          if (!this.table[v_coord][h_coord]) {
+            this.tian(v_coord, h_coord);
+            done = false;
+          }
+        }
+
+        return done;
+      },
+      tian(v_coord, h_coord) {
+        this.table[v_coord][h_coord] = this.number;
+        this.coord[0] = v_coord;
+        this.coord[1] = h_coord;
+        this.number++;
+      }
+    }
+  });
+</script>
+</body>
+</html>
