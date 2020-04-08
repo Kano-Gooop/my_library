@@ -50,6 +50,12 @@ function time_format(time, fmt = 'yyyy-MM-dd') {
   }
 }
 
+/**
+ * 将秒数格式化成可读性高的字符串
+ * @param second  要格式化的秒数
+ * @param format  格式化字符串
+ * @returns {string}  被格式化的字符串
+ */
 function second_format(second, format = 'dd天hh小时mm分ss秒') {
   let d, h, m, s;  // 日 小时 分钟 秒
 
@@ -68,4 +74,8 @@ function second_format(second, format = 'dd天hh小时mm分ss秒') {
     if (minute) return  ('0' + m).slice(-2);
     if (second) return  ('0' + s).slice(-2);
   });
+}
+
+function repeat(str, count) {
+  return Array(count + 1).join(str);
 }
