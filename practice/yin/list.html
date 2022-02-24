@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+啦啦啦啦啦啦
+<script>
+  var show = console.log;
+
+  // function pair(a, b)
+  // {
+  //   return select => select(a, b);
+  // }
+  //
+  // function isPair(x)
+  // {
+  //   return typeof (x) == "function";
+  // }
+  //
+  // function first(p)
+  // {
+  //   if (isPair(p))
+  //   {
+  //     return p((a, b) => a);
+  //   }
+  //   else
+  //   {
+  //     throw "Not a pair: " + p;
+  //   }
+  // }
+  //
+  // function second(p)
+  // {
+  //   if (isPair(p))
+  //   {
+  //     return p((a, b) => b);
+  //   }
+  //   else
+  //   {
+  //     throw "Not a pair: " + p;
+  //   }
+  // }
+
+  function pairToString(x)
+  {
+    if (!isPair(x))
+    {
+      return String(x);
+    }
+    else
+    {
+      return "(" + pairToString(first(x)) + ", " + pairToString(second(x)) + ")";
+    }
+  }
+
+  var head = first;
+  var tail = second;
+
+  function length(ls)
+  {
+    if (ls == null)
+    {
+      return 0;
+    }
+    else
+    {
+      return 1 + length(tail(ls));
+    }
+  }
+
+  function append(ls1, ls2)
+  {
+    if (ls1 == null)
+    {
+      return ls2;
+    }
+    else
+    {
+      return pair(head(ls1), append(tail(ls1), ls2));
+    }
+  }
+
+  function nth(ls, n)
+  {
+    if (ls == null)
+    {
+      throw "out of bound";
+    }
+    else if (n == 0)
+    {
+      return head(ls);
+    }
+    else
+    {
+      return nth(tail(ls), n - 1);
+    }
+  }
+
+  var list1 = pair(7, pair(3, pair(2, pair(9, null))));
+  var list2 = pair(5, pair(4, pair(6, pair(1, pair(8, null)))));
+
+
+  // last
+  function last(ls)
+  {
+    if (ls == null)
+    {
+      throw "链表是空的";
+    }
+    else if (tail(ls) == null)
+    {
+      return head(ls);
+    }
+    else
+    {
+      return last(tail(ls));
+    }
+  }
+
+  // show("---- last -----");
+  // show(pairToString(list1));  // (7, (3, (2, (9, null))))
+  // show(last(list1));          // 9
+  // show(pairToString(list2));  // (5, (4, (6, (1, (8, null)))))
+  // show(last(list2));          // 8
+  // show(last(null));           // Uncaught 链表是空的
+
+
+  // member
+  function member(x, ls)
+  {
+    if (ls == null)
+    {
+      return false;
+    }
+    else if (head(ls) == x)
+    {
+      return true;
+    }
+    else
+    {
+      return member(x, tail(ls));
+    }
+  }
+
+  // show("----- member -----");
+  // show(pairToString(list2));  // (5, (4, (6, (1, (8, null)))))
+  // show(member(3, list2));     // false
+  // show(member(4, list2));     // true
+
+
+  // rember
+  function rember(x, ls)
+  {
+    if (ls == null)
+    {
+      return null;
+    }
+    else if (head(ls) == x)
+    {
+      return rember(x, tail(ls));
+    }
+    else
+    {
+      return pair(head(ls), rember(x, tail(ls)));
+    }
+  }
+
+  // show("----- rember -----");
+  // var listRember = pair(3, pair(7, pair(2, (pair(3, pair(4, pair(3, null)))))));
+  //
+  // show(pairToString(listRember));             // (3, (7, (2, (3, (4, (3, null))))))
+  // show(pairToString(rember(2, listRember)));  // (3, (7, (3, (4, (3, null)))))
+  // show(pairToString(rember(4, listRember)));  // (3, (7, (2, (3, (3, null)))))
+  // show(pairToString(rember(3, listRember)));  // (7, (2, (4, null)))
+
+
+  // take
+  function take(ls, n)
+  {
+    if (n == 0)
+    {
+      return null;
+    }
+    else if (ls == null)
+    {
+      throw "超出链表长度";
+    }
+    else
+    {
+      return pair(head(ls), take(tail(ls), n - 1));
+    }
+  }
+
+  // show("----- take -----")
+  // show(pairToString(list2));            // (5, (4, (6, (1, (8, null)))))
+  //
+  // show(pairToString(take(list2, 0)));   // null
+  // show(pairToString(take(list2, 3)));   // (5, (4, (6, null)))
+  // show(pairToString(take(list2, 5)));   // (5, (4, (6, (1, (8, null)))))
+  // show(pairToString(take(list2, 9)));   // Uncaught 超出链表长度
+
+
+  // drop
+  function drop(ls, n)
+  {
+    if (n == 0)
+    {
+      return ls;
+    }
+    else if (ls == null)
+    {
+      throw "超出链表长度";
+    }
+    else
+    {
+      return drop(tail(ls), n - 1);
+    }
+  }
+
+  // show("---- drop -----");
+  // show(pairToString(list2));            // (5, (4, (6, (1, (8, null)))))
+  //
+  // show(pairToString(drop(list2, 0)));   // (5, (4, (6, (1, (8, null)))))
+  // show(pairToString(drop(list2, 2)));   // (6, (1, (8, null)))
+  // show(pairToString(drop(list2, 3)));   // (1, (8, null))
+  // show(pairToString(drop(list2, 5)));   // null
+  // show(pairToString(drop(list2, 9)));   // Uncaught 超出链表长度
+
+
+  // remove
+  function remove(ls, n)
+  {
+    if (ls == null)
+    {
+      throw "超出链表长度";
+    }
+    else if (n == 0)
+    {
+      return tail(ls);
+    }
+    else
+    {
+      return pair(head(ls), remove(tail(ls), n - 1));
+    }
+  }
+
+  // show("---- remove -----");
+  // show(pairToString(list2));              // (5, (4, (6, (1, (8, null)))))
+  //
+  // show(pairToString(remove(list2, 0)));   // (4, (6, (1, (8, null))))
+  // show(pairToString(remove(list2, 2)));   // (5, (4, (1, (8, null))))
+  // show(pairToString(remove(list2, 9)));   // Uncaught 超出链表长度
+  // show(pairToString(remove(null, 0)));    // Uncaught 超出链表长度
+
+
+  // map
+  function map(f, ls)
+  {
+    if (ls == null)
+    {
+      return null;
+    }
+    else
+    {
+      return pair(f(head(ls)), map(f, tail(ls)));
+    }
+  }
+
+  // show("----- map -----");
+  // show(pairToString(map(x => x * x, list2)));   // (25, (16, (36, (1, (64, null)))))
+  // show(pairToString(map(x => x > 5, list2)));   // (false, (false, (true, (false, (true, null)))))
+
+
+  // filter
+  function filter(pred, ls)
+  {
+    if (ls == null)
+    {
+      return null;
+    }
+    else if (pred(head(ls)))
+    {
+      return pair(head(ls), filter(pred, tail(ls)));
+    }
+    else
+    {
+      return filter(pred, tail(ls));
+    }
+  }
+
+  // show("---- filter -----");
+  // show(pairToString(list2));                            // (5, (4, (6, (1, (8, null)))))
+  //
+  // show(pairToString(filter(x => x % 2 == 1, list2)));   // (5, (1, null))
+  // show(pairToString(filter(x => x % 3 == 0, list2)));   // (6, null)
+  // show(pairToString(filter(x => x > 4, list2)));        // (5, (6, (8, null)))
+
+
+  // zip
+  function zip(ls1, ls2)
+  {
+    if (ls1 == null)
+    {
+      return null;
+    }
+    else if (ls2 == null)
+    {
+      return null;
+    }
+    else
+    {
+      return pair(pair(head(ls1), head(ls2)), zip(tail(ls1), tail(ls2)));
+    }
+  }
+
+  // show("----- zip -----");
+  // show(pairToString(list1));              // (7, (3, (2, (9, null))))
+  // show(pairToString(list2));              // (5, (4, (6, (1, (8, null)))))
+  //
+  // show(pairToString(zip(list1, list2)));  // ((7, 5), ((3, 4), ((2, 6), ((9, 1), null))))
+
+
+  // listEqual
+  function listEqual(ls1, ls2)
+  {
+    if (ls1 == null && ls2 == null)
+    {
+      return true;
+    }
+    else if (ls1 == null || ls2 == null)
+    {
+      // ls1 或 ls2 只有其中一方为 null，说明链表长度不等
+      return false;
+    }
+    else if (head(ls1) != head(ls2))
+    {
+      return false;
+    }
+    else
+    {
+      return listEqual(tail(ls1), tail(ls2));
+    }
+  }
+
+  var listC1 = pair(7, pair(3, pair(2, pair(9, null))));
+  var listC2 = pair(7, pair(3, pair(2, pair(9, pair(10, null)))));
+
+  var listC3 = pair(7, pair(3, null));
+  var listC4 = pair(2, pair(9, null));
+
+  // show(listEqual(list1, list2));                      // false
+  // show(listEqual(list1, list1));                      // true
+  // show(listEqual(list1, listC1));                     // true
+  // show(listEqual(list1, listC2));                     // false
+  // show(listEqual(listC2, listC1));                    // false
+  // show(listEqual(list1, append(listC3, listC4)));     // true
+  // show(listEqual(pair(0, list1), pair(0, listC1)));   // true
+  // show(listEqual(pair(0, listC1), pair(1, listC1)));  // false
+
+
+  // reverse
+  function reverse(ls)
+  {
+    if (ls == null)
+    {
+      return null;
+    }
+    else
+    {
+      return append(reverse(tail(ls)), pair(head(ls), null));
+    }
+  }
+
+  // show("----- reverse -----");
+  // show(pairToString(list1));            // (7, (3, (2, (9, null))))
+  // show(pairToString(reverse(null)));    // null
+  // show(pairToString(reverse(list1)));   // (9, (2, (3, (7, null))))
+  // show(pairToString(list2));            // (5, (4, (6, (1, (8, null)))))
+  // show(pairToString(reverse(list2)));   // (8, (1, (6, (4, (5, null)))))
+
+
+  // sum
+  function sum(ls)
+  {
+    if (ls == null)
+    {
+      return 0;
+    }
+    else
+    {
+      return head(ls) + sum(tail(ls));
+    }
+  }
+
+  // show("---- sum ----");
+  // show(sum(list1));       // 21
+  // show(sum(list2));       // 24
+  // show(sum(null));        // 0
+
+
+  // prod
+  function prod(ls)
+  {
+    if (ls == null)
+    {
+      return 1;
+    }
+    else
+    {
+      return head(ls) * prod(tail(ls));
+    }
+  }
+
+  // show("---- prod ----");
+  // show(prod(list1));        // 378
+  // show(prod(list2));        // 960
+  // show(prod(null));         // 1
+
+  // minimum
+  function minimum(ls)
+  {
+    if (tail(ls) == null)
+    {
+      return head(ls);
+    }
+    else
+    {
+      return min(head(ls), minimum(tail(ls)));
+    }
+  }
+
+  function min(a, b)
+  {
+    if (a < b)
+    {
+      return a;
+    }
+    else
+    {
+      return b;
+    }
+  }
+
+  // show("----- minimum -----");
+  // show(minimum(list1));         // 2
+  // show(minimum(list2));         // 1
+
+
+  // maximum
+  function maximum(ls)
+  {
+    if (tail(ls) == null)
+    {
+      return head(ls);
+    }
+    else
+    {
+      return max(head(ls), maximum(tail(ls)));
+    }
+  }
+
+  function max(a, b)
+  {
+    if (a > b)
+    {
+      return a;
+    }
+    else
+    {
+      return b;
+    }
+  }
+
+  // show("----- maximum -----");
+  // show(maximum(list1));         // 9
+  // show(maximum(list2));         // 8
+
+
+  // fold
+  function fold(ls, unit, combine)
+  {
+    if (ls == null)
+    {
+      return unit;
+    }
+    else
+    {
+      return combine(head(ls), fold(tail(ls), unit, combine));
+    }
+  }
+
+  // show(fold(list1, 0, (x, y) => x + y));  // 21
+  // show(fold(list1, 1, (x, y) => x * y));  // 378
+
+
+  // 用 fold 重新定义一些链表函数
+  function sum2(ls)
+  {
+    return fold(ls, 0, (x, y) => x + y);
+  }
+
+  function prod2(ls)
+  {
+    return fold(ls, 1, (x, y) => x * y);
+  }
+
+  function length2(ls)
+  {
+    return fold(ls, 0, (x, y) => 1 + y);
+  }
+
+  function append2(ls1, ls2)
+  {
+    return fold(ls1, ls2, pair);
+  }
+
+  function map2(f, ls)
+  {
+    return fold(ls, null, (x, y) => pair(f(x), y));
+  }
+
+  function minimum2(ls)
+  {
+    return fold(ls, head(ls), min);
+  }
+
+  function maximum2(ls)
+  {
+    return fold(ls, head(ls), max);
+  }
+
+  function reverse2(ls)
+  {
+    return fold(ls, null, (x, y) => append(y, pair(x, null)));
+  }
+
+
+  // 重新定义 pair（用 JavaScript 对象）
+  // function pair(a, b)
+  // {
+  //   return {
+  //     type: "pair",
+  //     first: a,
+  //     second: b
+  //   }
+  // }
+  //
+  // function first(p)
+  // {
+  //   return p.first;
+  // }
+  //
+  // function second(p)
+  // {
+  //   return p.second;
+  // }
+  //
+  // function isPair(x)
+  // {
+  //   if (typeof (x) == "object")
+  //   {
+  //     if (x == null)
+  //     {
+  //       return false;
+  //     }
+  //     else
+  //     {
+  //       return x.type == "pair";
+  //     }
+  //   }
+  //   else
+  //   {
+  //     return false;
+  //   }
+  // }
+
+
+  // 重新定义 pair（用数组）
+  function pair(a, b)
+  {
+    return [a, b, "pair"];
+  }
+
+  function first(p)
+  {
+    return p[0];
+  }
+
+  function second(p)
+  {
+    return p[1];
+  }
+
+  function isPair(x)
+  {
+    if (Array.isArray(x))
+    {
+      return x[2] == "pair";
+    }
+    else
+    {
+      return false;
+    }
+  }
+
+
+  // permute
+  // function permute(ls)
+  // {
+  //   function insert(ls, x, n)
+  //   {
+  //     if (ls == null)
+  //     {
+  //       return pair(x, null);
+  //     }
+  //     else if (n == 0)
+  //     {
+  //       return pair(x, ls);
+  //     }
+  //     else
+  //     {
+  //       return pair(head(ls), insert(tail(ls), x, n - 1));
+  //     }
+  //   }
+  //
+  //   function permuteInsert(ls, x, n)
+  //   {
+  //     if (n == length(ls) + 1)
+  //     {
+  //       return null;
+  //     }
+  //     else
+  //     {
+  //       return pair(insert(ls, x, n), permuteInsert(ls, x, n + 1));
+  //     }
+  //   }
+  //
+  //   function permuteAppend(ls, x)
+  //   {
+  //     if (ls == null)
+  //     {
+  //       return null;
+  //     }
+  //     else
+  //     {
+  //       return append(permuteInsert(head(ls), x, 0), permuteAppend(tail(ls), x));
+  //     }
+  //   }
+  //
+  //   if (ls == null)
+  //   {
+  //     return pair(null, null);
+  //   }
+  //   else
+  //   {
+  //     return permuteAppend(permute(tail(ls)), head(ls));
+  //   }
+  // }
+
+  // permute
+  function permute(ls)
+  {
+    if (ls == null)
+    {
+      return pair(null, null);
+    }
+    else
+    {
+      var shiftLs = fold(ls, null, (x, y) => pair(pair(x, rember(x, ls)), y));
+      var appendAll = list => fold(list, null, (x, y) => append(x, y));
+      return appendAll(map(l => map(x => pair(head(l), x), permute(tail(l))), shiftLs));
+    }
+  }
+
+  show(pairToString(permute(null)));
+  show(pairToString(permute(pair(1, null))));
+  show(pairToString(permute(pair(1, pair(2, null)))));
+  show(pairToString(permute(pair(1, pair(2, pair(3, null))))));
+</script>
+</body>
+</html>

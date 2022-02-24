@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    #app {
+      padding: 30px;
+    }
+
+    .filename-box {
+      margin-top: 23px;
+      width: 1000px;
+      font-size: 16px;
+    }
+
+    .filename-box > .title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .filename-box > .title .text {
+
+    }
+
+    .filename-box > .title .btn-box {
+      display: flex;
+    }
+
+    .filename-box > .title .btn {
+      background-color: #32cce4;
+      font-size: 12px;
+      padding: 8px 15px;
+      color: #fff;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .filename-box > .title .btn + .btn {
+      margin-left: 10px;
+    }
+
+    .filename-box > .title .btn.clear {
+      background-color: #de4141;
+    }
+
+    .file-list {
+      margin-top: 15px;
+    }
+
+    .file-list .file {
+      background-color: #eee;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+    }
+
+    .file-list .file:nth-child(2n) {
+      background-color: #aaa;
+    }
+
+    .file-list .file .file-name {
+      font-size: 14px;
+    }
+
+    .file-list .file .origin-name {
+    }
+  </style>
+</head>
+<body>
+<div id="app">
+  <input type="file" multiple ref="file"/>
+  <input @click="upload_click" type="button" value="上传"/>
+
+  <div class="filename-box">
+    <div class="title">
+      <div class="text">文件列表</div>
+      <div class="btn-box">
+        <div @click="filename_list = []" class="btn clear">清空</div>
+        <div class="btn copy-all">复制</div>
+      </div>
+    </div>
+    <div class="file-list">
+      <template v-if="filename_list.length > 0">
+        <div class="file" v-for="(item, index) in filename_list">
+          <div class="file-name">{{item.filename}}</div>
+          <div class="origin-name">{{item.origin}}</div>
+        </div>
+      </template>
+      <div class="file" v-else>
+        <div class="file-name">空</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="/js-plugin/clipboard.min.js"></script>
+<script src="/js-framework/jquery.min.js"></script>
+<script src="/js-framework/vue/vue-2.6.10.js"></script>
+<script>
+  new Vue({
+    el: '#app',
+    data: {
+      filename_list: []
+    },
+    mounted()
+    {
+      new ClipboardJS('.copy-all', {
+        text: () =>
+        {
+          if (this.filename_list.length > 0)
+          {
+            alert('已复制');
+            let str = '';
+            this.filename_list.forEach(item => {
+              str += item.filename + '\n';
+            })
+            return str;
+          }
+          else
+          {
+            return '';
+          }
+        }
+      });
+    },
+    methods: {
+      // 点击文件上传文件
+      upload_click()
+      {
+        if (this.$refs.file.files.length > 0)
+        {
+          for (let i = 0; i < this.$refs.file.files.length; i++)
+          {
+            this.upload(this.$refs.file.files[i]).then(filename =>
+            {
+              this.filename_list.push({
+                filename: filename,
+                origin: this.$refs.file.files[i].name
+              });
+            });
+          }
+        }
+      },
+      upload(file)
+      {
+        return new Promise(resolve =>
+        {
+          let formData = new FormData();
+          formData.append("file", file);
+
+          $.ajax({
+            type: 'post',
+            url: 'https://file.moss.wingoing.cn/fm/upload',
+            data: formData,
+            dataType: 'json',
+            contentType: false,
+            processData: false,
+            success(res)
+            {
+              resolve(res.uri);
+            },
+            error(err)
+            {
+              // 发生错误，上传失败
+            }
+          })
+        });
+      }
+    }
+  });
+</script>
+</body>
+</html>

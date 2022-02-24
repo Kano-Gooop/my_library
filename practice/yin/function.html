@@ -1,0 +1,295 @@
+<!--<!doctype html>-->
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+  </style>
+</head>
+<body>
+<script src="/js-framework/jquery-3.4.1.min.js"></script>
+<script>
+  // area
+  var pi = Math.PI;
+  var area = r => pi * r * r;
+
+  // circum
+  var circum = r => 2 * pi * r;
+
+  // innerArea
+  function innerArea(a, b) {
+    let r = Math.sqrt(a * a + b * b) / 2;
+    return area(r);
+  }
+
+  // two
+  // var two = f => x => f(f(x));
+
+  // 示例1
+  // var add1 = x => x + 1;
+  // var two_add1 = two(add1);
+  // console.log(two_add1(0));  // 运行结果为2
+
+  // 示例2
+  // var square = x => x * x;
+  // var two_square = two(square);
+  // console.log(two_square(3));  // 运行结果为81
+
+  // three
+  // var three = f => x => f(f(f(x)));
+
+  // four
+  // var four = f => x => f(f(f(f(x))));
+
+  // 测试（已测试，运行结果正确）
+  // console.log(three(x => x + 1)(0));
+  // console.log(three(x => x * 2)(1));
+  // console.log(four(x => x + 1)(0));
+  // console.log(four(x => x * 2)(1));
+
+  // succ
+  // function succ(n)
+  // {
+  //   return f => x => f(n(f)(x));
+  // }
+
+  // var three = succ(two);
+  // var four = succ(three);
+  // var five = succ(four);
+
+  // 已测试，运行结果正确
+  var add1 = x => x + 1;
+  // console.log(two(add1)(0));
+  // console.log(three(add1)(0));
+  // console.log(four(add1)(0));
+  // console.log(five(add1)(0));
+  //
+  // console.log(three(x => x * 2)(1));
+  // console.log(four(x => x * 2)(1));
+
+  // 用 compose 表达 succ
+  function compose(f, g) {
+    return x => f(g(x));
+  }
+
+  function succ(n)
+  {
+    return f => compose(f, n(f));
+  }
+
+  // toNumber
+  function toNumber(n)
+  {
+    return n(x => x + 1)(0);
+  }
+
+  // 已通过测试
+  // console.log(toNumber(two));   // 2
+  // console.log(toNumber(three)); // 3
+  // console.log(toNumber(four));  // 4
+
+  // zero
+  var zero = f => x => x;
+  var one = succ(zero);
+  var two = succ(one);
+  var three = succ(two);
+  var four = succ(three);
+  var five = succ(four);
+  var six = succ(five);
+  var seven = succ(six);
+  var eight = succ(seven);
+  var nine = succ(eight);
+
+  // console.log(toNumber(zero));    // 0
+  // console.log(toNumber(one));     // 1
+  // console.log(toNumber(two));     // 2
+  // console.log(toNumber(three));   // 3
+  // console.log(toNumber(four));    // 4
+  // console.log(toNumber(five));    // 5
+  // console.log(toNumber(six));     // 6
+  // console.log(toNumber(seven));   // 7
+  // console.log(toNumber(eight));   // 8
+  // console.log(toNumber(nine));    // 9
+
+  // plus
+  // function plus(m, n) {
+  //   return f => x => n(f)(m(f)(x));
+  // }
+
+  // 测试
+  // console.log(toNumber(plus(two, three)));  // 5
+  // console.log(toNumber(plus(five, six)));   // 11
+
+  // 用 compose 表达 plus
+  function plus(m, n)
+  {
+    return f => compose(n(f), m(f));
+  }
+
+  // mult
+  // function mult(m, n)
+  // {
+  //   return f => n(m(f));
+  // }
+
+  // 用 compose 表达 mult
+  var mult = compose;
+
+  // 测试
+  // console.log(toNumber(mult(two, three))); // 6
+  // console.log(toNumber(mult(five, six)));  // 30
+
+  // function mult(m, n)
+  // {
+  //   return compose(n, m);
+  // }
+
+  // pow
+  function pow(m, n)
+  {
+    return n(m);
+  }
+
+  // 测试
+  // console.log(toNumber(pow(two, three))); // 8
+  // console.log(toNumber(pow(five, six))); // 15625
+
+  // pair
+  function pair(a, b)
+  {
+    return select => select(a, b);
+  }
+
+  function first(p)
+  {
+    return p((a, b) => a);
+  }
+
+  function second(p)
+  {
+    return p((a, b) => b);
+  }
+
+  // 测试
+  var p1 = pair(2, 3);
+  // console.log(first(p1));   // 2
+  // console.log(second(p1));  // 3
+
+  var p2 = pair(2, pair("你好", false));
+  // console.log(first(p2));           // 2
+  // console.log(first(second(p2)));   // 你好
+  // console.log(second(second(p2)));  // false
+
+  // pred
+  function pred(n)
+  {
+    var shift = p => pair(succ(first(p)), first(p));
+    return second(n(shift)(pair(zero, zero)));
+  }
+  
+  // 测试
+  // console.log(toNumber(pred(three)));           // 2
+  // console.log(toNumber(pred(eight)));           // 7
+  // console.log(toNumber(pred(pow(two, four))));  // 15
+  // console.log(pred(four)(x => x + 1)(0));       // 3
+  // console.log(pred(five)(x => x * 2)(1));       // 16
+
+  // 减法(n - m)（其中 n >= m）
+  // function minus(n, m)
+  // {
+  //   return m(pred)(n);
+  // }
+
+  // 减法（不用pred）
+  function minus(n, m)
+  {
+    var shift = p => pair(succ(first(p)), p);
+    return first(m(second)(n(shift)(pair(zero, zero))));
+  }
+
+  // 测试
+  console.log(toNumber(minus(nine, five)));   // 4
+  console.log(toNumber(minus(eight, one)));   // 7
+  console.log(toNumber(minus(five, three)));  // 2
+  console.log(toNumber(minus(four, four)));   // 0
+
+  // p = a => pair(succ(a), a);
+  // p(zero) = pair(succ(zero), zero);
+  // p(p(zero)) = pair(succ(one), one);  pair(succ(zero), zero)(a => pair(succ(a), a))
+
+  // pair(a => pair(succ(a), a))
+  // ((a, b) => select => select(a, b))(a => pair(succ(a), a))
+  // select => select(a => pair(succ(a), a))
+
+  // 不要删 start
+  // var n0 = select => select(zero);
+  // var n1 = n0(a => pair(succ(a), a));
+  // var n2 = n1(a => pair(succ(a), a));
+  // var n3 = n2(a => pair(succ(a), a));
+  // console.log(toNumber(second(n1)), toNumber(second(n2)), toNumber(second(n3)));
+  //
+  //
+  // var f = a => pair(succ(a), a);
+  // var qu = res => res(f);
+  // console.log(second(eight(qu)(n0))(x => x + 0.5)(0));
+  // 不要删 end
+
+
+  // (a => pair(succ(a), a))(zero)
+  // (a => pair(succ(a), a))(zero)(a => pair(succ(a), a))
+  // (a => pair(succ(a), a))(zero)(a => pair(succ(a), a))(a => pair(succ(a), a))
+  // f(x)
+  // f(zero)(f)(f)
+
+  // (f => x => f(x))(pair(one, zero))
+  // x => pair(one, zero)(x)
+  // x => (select => select(one, zero))(x)
+  // x => x(one, zero)
+
+  // f = a => pair(succ(a), a)
+
+  // f(zero)        // p对象，存了 one, zero
+  // f(zero)(f)     // p对象，存了 two, one
+  // f(zero)(f)(f)  // p对象，存了 three, two
+
+  // (f => x => f(f(x)))(pair(one, zero))
+  // x => pair(one, zero)(pair(one, zero)(x))
+  // x => (select => select(one, zero))(select => select(one, zero)(x))
+  // x => (select => select(one, zero))(x(one, zero))
+
+  // (a, b) => pair(succ(a), succ(b))
+  // (select => select(one, zero))((a, b) => pair(succ(a), succ(b)))(one, zero)
+  // (select => select(one, zero))
+  // (select => select((succ(one), succ(zero)))(one, zero)
+
+  // pair(one, zero)    one  zero  1
+  // pair(two, one)     two  one   2
+  // pair(three, two)   three two  3
+
+  // pair(succ, zero)((a, b) => zero(a(b)))
+  // pair(succ, pair(succ, pair(zero, succ)))
+
+  // one -> two 过程
+  // f => x => f((f => x => f(x))(f)(x))
+  // f => x => f(f(x))
+
+  /*
+  * f => x => f(x)
+  *
+  * (f => x => f(x))(f)(x => x)
+  * (x => f(x))(f => x => x)
+  * f(f => x => x)
+  *
+  * pair(succ, pair(succ, pair(succ, zero)))
+  * */
+</script>
+</body>
+</html>
+
+f = a => pair(succ(a), a)
+f(zero)        // p对象，存了 one, zero
+f(zero)(f)     // p对象，存了 two, one
+f(zero)(f)(f)  // p对象，存了 three, two

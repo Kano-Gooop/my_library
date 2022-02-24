@@ -76,6 +76,7 @@ function second_format(second, format = 'dd天hh小时mm分ss秒') {
   });
 }
 
+// 重复一个字符串n次
 function repeat(str, count) {
   return Array(count + 1).join(str);
 }

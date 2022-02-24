@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+啦啦啦啦啦啦
+<script>
+  var show = console.log;
+
+  function pair(a, b)
+  {
+    return select => select(a, b);
+  }
+
+  function isPair(x)
+  {
+    return typeof (x) == "function";
+  }
+
+  function first(p)
+  {
+    if (isPair(p))
+    {
+      return p((a, b) => a);
+    }
+    else
+    {
+      throw "Not a pair: " + p;
+    }
+  }
+
+  function second(p)
+  {
+    if (isPair(p))
+    {
+      return p((a, b) => b);
+    }
+    else
+    {
+      throw "Not a pair: " + p;
+    }
+  }
+
+  function pairToString(x)
+  {
+    if (!isPair(x))
+    {
+      return String(x);
+    }
+    else
+    {
+      return "(" + pairToString(first(x)) + ", " + pairToString(second(x)) + ")";
+    }
+  }
+
+  var head = first;
+  var tail = second;
+
+  // 线性查找表
+  var emptyTable = null;
+
+  function addTable(key, value, oldTable)
+  {
+    return pair(pair(key, value), oldTable);
+  }
+
+  function lookupTable(key, table)
+  {
+    if (table == emptyTable)
+    {
+      return null;
+    }
+    else if (first(head(table)) == key)
+    {
+      return second(head(table));
+    }
+    else
+    {
+      return lookupTable(key, tail(table));
+    }
+  }
+
+  // 查找二叉树
+  var emptyBST = null;
+
+  function bst(key, value, left, right)
+  {
+    return pair("bst", pair(key, pair(value, pair(left, pair(right, null)))));
+  }
+
+  function isBST(x)
+  {
+    return isPair(x) && first(x) == "bst";
+  }
+
+  function bstKey(node)
+  {
+    return first(second(node));
+  }
+
+  function bstValue(node)
+  {
+    return first(second(second(node)));
+  }
+
+  function bstLeft(node)
+  {
+    return first(second(second(second(node))));
+  }
+
+  function bstRight(node)
+  {
+    return first(second(second(second(second(node)))));
+  }
+
+  function bstString(node)
+  {
+    function spaces(n)
+    {
+      if (n == 0)
+      {
+        return "";
+      }
+      else
+      {
+        return " " + spaces(n - 1);
+      }
+    }
+
+    function convert(node, level)
+    {
+      if (node == emptyBST)
+      {
+        return "\n";
+      }
+      else
+      {
+        return convert(bstRight(node), level + 1)
+          + spaces(level * 4)
+          + bstKey(node) + ":" + bstValue(node)
+          + convert(bstLeft(node), level + 1);
+      }
+    }
+
+    return convert(node, 0);
+  }
+
+  function addBST(key, value, node)
+  {
+    if (node == emptyBST)
+    {
+      return bst(key, value, emptyBST, emptyBST);
+    }
+    else if (key == bstKey(node))
+    {
+      return bst(key, value, bstLeft(node), bstRight(node));
+    }
+    else if (key < bstKey(node))
+    {
+      return bst(bstKey(node), bstValue(node), addBST(key, value, bstLeft(node)), bstRight(node));
+    }
+    else
+    {
+      return bst(bstKey(node), bstValue(node), bstLeft(node), addBST(key, value, bstRight(node)));
+    }
+  }
+
+  function lookupBST(key, node)
+  {
+    if (node == emptyBST)
+    {
+      return null;
+    }
+    else if (key == bstKey(node))
+    {
+      return bstValue(node);
+    }
+    else if (key < bstKey(node))
+    {
+      return lookupBST(key, bstLeft(node));
+    }
+    else
+    {
+      return lookupBST(key, bstRight(node));
+    }
+  }
+
+  // ---------- variable -----------
+  // 变量只有一个成员，就是它的名字。
+  function variable(name)
+  {
+    return pair("variable", pair(name, null));
+  }
+
+  function isVariable(x)
+  {
+    return isPair(x) && first(x) == "variable";
+  }
+
+  function variableName(v)
+  {
+    return first(second(v));
+  }
+
+  // ---------- function -----------
+  // 为了简单，我们的函数只有一个参数。
+  // 函数的参数（param）是一个字符串（不是 variable）。
+  // 函数体（body）是一个任意的表达式。
+  function fun(param, body)
+  {
+    return pair("function", pair(param, pair(body, null)));
+  }
+
+  function isFunction(x)
+  {
+    return isPair(x) && first(x) == "function";
+  }
+
+  function funParam(f)
+  {
+    return first(second(f));
+  }
+
+  function funBody(f)
+  {
+    return first(second(second(f)));
+  }
+
+  // ---------- closure -----------
+  // 闭包的两个成员是：函数，函数产生时的环境。
+  function closure(fun, env)
+  {
+    return pair("closure", pair(fun, pair(env, null)));
+  }
+
+  function isClosure(x)
+  {
+    return isPair(x) && first(x) == "closure";
+  }
+
+  function closureFun(c)
+  {
+    return first(second(c));
+  }
+
+  function closureEnv(c)
+  {
+    return first(second(second(c)));
+  }
+
+  // ---------- call -----------
+  // 调用的第一个成员叫"操作符"（operator），第二个成员叫操作数（operand 或 argument）。
+  // 操作符可能是以下几种：
+  // 1. 函数表达式（匿名函数）
+  // 2. 指向函数的变量
+  // 3. 另一个调用，调用了返回函数的函数（比如 compose）
+  function call(op, arg)
+  {
+    return pair("call", pair(op, pair(arg, null)));
+  }
+
+  function isCall(x)
+  {
+    return isPair(x) && first(x) == "call";
+  }
+
+  function callOp(c)
+  {
+    return first(second(c));
+  }
+
+  function callArg(c)
+  {
+    return first(second(second(c)));
+  }
+
+  // ------------ binop -------------
+  function binop(op, e1, e2)
+  {
+    return pair("binop", pair(op, pair(e1, pair(e2, null))));
+  }
+
+  function isBinOp(x)
+  {
+    return isPair(x) && first(x) == "binop";
+  }
+
+  function binopOp(binop)
+  {
+    return first(second(binop));
+  }
+
+  function binopE1(binop)
+  {
+    return first(second(second(binop)));
+  }
+
+  function binopE2(binop)
+  {
+    return first(second(second(second(binop))));
+  }
+
+  function toInfix(exp)
+  {
+    if (!isBinOp(exp))
+    {
+      return String(exp);
+    }
+    else
+    {
+      return "("
+        + toInfix(binopE1(exp))
+        + " " + binopOp(exp) + " "
+        + toInfix(binopE2(exp))
+        + ")";
+    }
+  }
+
+  // var emptyEnv = emptyTable;
+  // var extEnv = addTable;
+  // var lookupEnv = lookupTable;
+
+  // expToString（把程序转换成字符串）
+  function expToString(exp)
+  {
+    if (typeof (exp) == "number" || typeof (exp) == "string")
+    {
+      return String(exp);
+    }
+    else if (isVariable(exp))
+    {
+      return variableName(exp);
+    }
+    else if (isFunction(exp))
+    {
+      return funParam(exp) + " => " + expToString(funBody(exp));
+    }
+    else if (isCall(exp))
+    {
+      if (isFunction(callOp(exp)))
+      {
+        return "(" + expToString(callOp(exp)) + ")(" + expToString(callArg(exp)) + ")";
+      }
+      else
+      {
+        return expToString(callOp(exp)) + "(" + expToString(callArg(exp)) + ")";
+      }
+    }
+    else if (isBinOp(exp))
+    {
+      return "("
+        + expToString(binopE1(exp))
+        + " " + binopOp(exp) + " "
+        + expToString(binopE2(exp))
+        + ")";
+    }
+    else if (isClosure(exp))
+    {
+      return expToString(closureFun(exp)) + ": " + listToString(closureEnv(exp));
+    }
+    else
+    {
+      throw "illegal expression";
+    }
+  }
+
+  // test("test expToString variable",
+  //   "x",
+  //   expToString(variable("x")));
+  //
+  // test("test expToString function",
+  //   "x => x",
+  //   expToString(fun("x", variable("x"))));
+  //
+  // test("test expToString function with binop 1",
+  //   "x => (x + 2)",
+  //   expToString(fun("x", binop("+", variable("x"), 2))));
+  //
+  // test("test expToString function with binop 2",
+  //   "x => (1 + (x * 2))",
+  //   expToString(fun("x", binop("+",
+  //     1,
+  //     binop("*", variable("x"), 2)))));
+  //
+  // test("test expToString call op variable",
+  //   "f(2)",
+  //   expToString(call(variable("f"), 2)));
+  //
+  // test("test expToString call nested",
+  //   "f(g(2))",
+  //   expToString(call(variable("f"), call(variable("g"), 2))));
+  //
+  // test("test expToString curried call",
+  //   "(x => y => (x + y))(2)(3)",
+  //   expToString(
+  //     call(
+  //       call(
+  //         fun("x",
+  //           fun("y",
+  //             binop("+", variable("x"), variable("y")))),
+  //         2),
+  //       3)));
+
+  // 解释器
+  // 改进 1：用 BST 表示环境
+  // 改进 2：实现条件分支
+  // 改进 4：let 局部变量
+
+  var emptyEnv = emptyBST;
+  var extEnv = addBST;
+  var lookupEnv = lookupBST;
+
+  function interp(exp)
+  {
+    function interp(exp, env)
+    {
+      if (typeof (exp) == "number"
+        || typeof (exp) == "string"
+        || typeof (exp) == "boolean")
+      {
+        return exp;
+      }
+      else if (isVariable(exp))
+      {
+        var v = lookupEnv(variableName(exp), env);
+        if (v != null)
+        {
+          return v;
+        }
+        else
+        {
+          throw "undefined variable: " + variableName(exp);
+        }
+      }
+      else if (isFunction(exp))
+      {
+        return closure(exp, env);
+      }
+      else if (isCall(exp))
+      {
+        var op = interp(callOp(exp), env);
+        var arg = interp(callArg(exp), env);
+
+        if (isClosure(op))
+        {
+          var fun1 = closureFun(op);
+          var newEnv = extEnv(funParam(fun1), arg, closureEnv(op));
+
+          return interp(funBody(fun1), newEnv);
+        }
+        else
+        {
+          throw "calling a non-function";
+        }
+      }
+      else if (isBinOp(exp))
+      {
+        var mathOp = binopOp(exp);
+
+        if (mathOp == "+")
+        {
+          return interp(binopE1(exp), env) + interp(binopE2(exp), env);
+        }
+        else if (mathOp == "*")
+        {
+          return interp(binopE1(exp), env) * interp(binopE2(exp), env);
+        }
+        else if (mathOp == "-")
+        {
+          return interp(binopE1(exp), env) - interp(binopE2(exp), env);
+        }
+        else if (mathOp == "/")
+        {
+          return interp(binopE1(exp), env) / interp(binopE2(exp), env);
+        }
+        else if (mathOp == "==")
+        {
+          return interp(binopE1(exp), env) == interp(binopE2(exp), env);
+        }
+        else if (mathOp == "<")
+        {
+          return interp(binopE1(exp), env) < interp(binopE2(exp), env);
+        }
+        else if (mathOp == ">")
+        {
+          return interp(binopE1(exp), env) > interp(binopE2(exp), env);
+        }
+        else
+        {
+          throw "不支持的操作: " + mathOp;
+        }
+      }
+      else if (isIfExp(exp))
+      {
+        var condition = interp(ifCondition(exp), env);
+        if (typeof condition != "boolean")
+        {
+          throw "ifCondition must be a boolean";
+        }
+        else if (condition)
+        {
+          return interp(ifTrueBranch(exp), env);
+        }
+        else
+        {
+          return interp(ifFalseBranch(exp), env);
+        }
+      }
+      else if (isLet(exp))
+      {
+        // 实现 1
+        // let newEnv = extEnv(letName(exp), interp(letValue(exp), env), env);
+        // return interp(letBody(exp), newEnv);
+
+        // 实现 2
+        return interp(call(fun(letName(exp), letBody(exp)), letValue(exp)), env);
+      }
+      else
+      {
+        // 报错，非法表达式。
+        throw "illegal expression";
+      }
+    }
+
+    return interp(exp, emptyEnv);
+  }
+
+  // 测试
+  // show("------ interp ------");
+  // test("test number", 42, interp(42));
+  // test("test string", "good", interp("good"));
+  //
+  // // ------- identity function --------
+  // var idFun = fun("x", variable("x"));
+  //
+  // test("test idFun text",
+  //   "(closure (function x (variable x)) ())",
+  //   listToString(interp(idFun)));
+  //
+  // test("test identity function call",
+  //   6,
+  //   interp(call(idFun, 6)));
+  //
+  // // ------- x => x * x --------
+  // var sqFun = fun("x", binop("*", variable("x"), variable("x")));
+  //
+  // test("test x => x * x text",
+  //   "(closure (function x (binop * (variable x) (variable x))) ())",
+  //   listToString(interp(sqFun)));
+  //
+  // test("test x => x * x call",
+  //   9,
+  //   interp(call(sqFun, 3)));
+  //
+  // // 显示 sqFun 的「表达式」的内部结构
+  // show(expToString(sqFun));
+  //
+  // // 显示 sqFun 的「值」（闭包）的内部结构
+  // show(expToString(interp(sqFun)));
+  //
+  // // -------- curried add --------
+  // // x => y => x + y
+  // var curriedAdd =
+  //   fun("x",
+  //     fun("y",
+  //       binop("+", variable("x"), variable("y"))));
+  //
+  // test("test curriedAdd",
+  //   5,
+  //   interp(call(call(curriedAdd, 2), 3)));
+  //
+  // // 显示 curriedAdd(2) 返回的闭包的内部结构
+  // // 根据是 table 还是 BST 稍有不同
+  // show(expToString(interp(call(curriedAdd, 2))));
+  //
+  // // --------- apply (curried) ---------
+  // // f => x => f(x)
+  // var applyFun =
+  //   fun("f",
+  //     fun("x",
+  //       call(variable("f"), variable("x"))));
+  //
+  // // apply(sqFun)(3)
+  // test("test apply call",
+  //   9,
+  //   interp(call(call(applyFun, sqFun), 3)));
+  //
+  // // -------- compose (curried) ---------
+  // // f => g => x => f(g(x))
+  // var composeFun =
+  //   fun("f",
+  //     fun("g",
+  //       fun("x",
+  //         call(variable("f"), call(variable("g"), variable("x"))))));
+  //
+  // var add1 = fun("x", binop("+", variable("x"), 1));
+  // var square = fun("x", binop("*", variable("x"), variable("x")));
+  //
+  // // var composed = compose(add1)(square);
+  // var composed1 = call(call(composeFun, add1), square);
+  //
+  // // composed(3)
+  // var composeCall1 = call(composed1, 3);
+  // test("test composed call 1",
+  //   10,
+  //   interp(composeCall1));
+  //
+  // // compose(square)(add1)(3)
+  // var composeCall2 = call(call(call(composeFun, square), add1), 3);
+  // test("test composed call 2",
+  //   16,
+  //   interp(composeCall2));
+
+
+  // 改进 2：实现条件分支
+  // --------- if ---------
+  function ifExp(condition, trueBranch, falseBranch)
+  {
+    return pair("ifExp", pair(condition, pair(trueBranch, pair(falseBranch, null))));
+  }
+
+  function isIfExp(x)
+  {
+    return isPair(x) && first(x) == "ifExp";
+  }
+
+  function ifCondition(ifexp)
+  {
+    return first(second(ifexp));
+  }
+
+  function ifTrueBranch(ifexp)
+  {
+    return first(second(second(ifexp)));
+  }
+
+  function ifFalseBranch(ifexp)
+  {
+    return first(second(second(second(ifexp))));
+  }
+
+  // 测试
+  // ---------- if -----------
+  // test("if constant true", "cat", interp(ifExp(true, "cat", "dog")));
+  // test("if constant false", "dog", interp(ifExp(false, "cat", "dog")));
+  // test("test if binop true", "cat", interp(ifExp(binop("<", 1, 2), "cat", "dog")));
+  // test("test if binop false", "dog", interp(ifExp(binop(">", 1, 2), "cat", "dog")));
+  // test("test if fun true", "cat", interp(call(fun("f", ifExp(call(variable("f"), 12), "cat", "dog")), fun("x", binop(">", variable("x"), 7)))));
+  // test("test if fun false", "dog", interp(call(fun("f", ifExp(call(variable("f"), 5), "cat", "dog")), fun("x", binop(">", variable("x"), 7)))));
+  // // abs
+  // var absExp = fun("x", ifExp(binop("<", variable("x"), 0), binop("-", 0, variable("x")), variable("x")));
+  // test("test abs 1", 3, interp(call(absExp, 3)));
+  // test("test abs 2", 7, interp(call(absExp, -7)));
+  // test("test abs 3", 0, interp(call(absExp, 0)));
+
+
+  // 改进 3：用 Y combinator 实现递归函数
+  // Y combinator 的定义
+  var Y = f =>
+    (x => f(v => x(x)(v)))
+    (x => f(v => x(x)(v)));
+
+  var YExp = fun("f",
+    call(fun("x", call(variable("f"), fun("v", call(call(variable("x"), variable("x")), variable("v"))))),
+      fun("x", call(variable("f"), fun("v", call(call(variable("x"), variable("x")), variable("v")))))));
+
+  var factGenExp = fun("fact",
+    fun("n", ifExp(binop("==", variable("n"), 0),
+      1,
+      binop("*", variable("n"),
+        call(variable("fact"), binop("-", variable("n"), 1))))));
+
+  // 用这个测试保证 YExp 翻译正确
+  test("test YExp to string",
+    "f => (x => f(v => x(x)(v)))(x => f(v => x(x)(v)))",
+    expToString(YExp));
+
+  var factExp = call(YExp, factGenExp);
+  test("test Y combinator 1", 120, interp(call(factExp, 5)));
+
+  // 完全去掉 var 的版本
+  show("all in one fact(5): " + interp(
+    call(
+      call(
+        fun("f",
+          call(fun("x", call(variable("f"), fun("v", call(call(variable("x"), variable("x")), variable("v"))))),
+            fun("x", call(variable("f"), fun("v", call(call(variable("x"), variable("x")), variable("v"))))))),
+        fun("fact",
+          fun("n", ifExp(binop("==", variable("n"), 0),
+            1,
+            binop("*", variable("n"),
+              call(variable("fact"), binop("-", variable("n"), 1))))))
+      ), 5)
+  ));
+
+  // 改进 4：let 局部变量
+  show("-------- let ---------");
+
+  // (let ((x 2))
+  //    x)
+  var let1 = letExp("x", 2, variable("x"));
+  test("test let 1", 2, interp(let1));
+
+  // (let ((x (* 2 3)))
+  //   x)
+  var let1a = letExp("x",
+    binop("*", 2, 3),
+    variable("x"));
+
+  test("test let 2", 6, interp(let1a));
+
+  // (let ((x 2))
+  //    (* x 3))
+  var let2 = letExp("x", 2, binop("*", variable("x"), 3));
+  test("test let 3", 6, interp(let2));
+
+  // Scheme 代码：
+  // (let ((x 2))
+  //  (let ((y 3))
+  //    (+ x y))
+  var let3 = letExp("x", 2,
+    letExp("y", 3,
+      binop("+", variable("x"), variable("y"))));
+
+  test("test nested let", 5, interp(let3));
+
+  var let4 = letExp("f", fun("x", variable("x")),
+    call(variable("f"), 42));
+
+  test("test let 4",
+    42,
+    interp(let4));
+
+  /* ---------------------------------------------------------------------------------------------------------- */
+
+  // 测试工具
+  function testEqual(p1, p2)
+  {
+    if (!isPair(p1) || !isPair(p2))
+    {
+      // 因为是测试工具，这里破例使用 === 操作符
+      if (p1 === p2)
+      {
+        return true;
+      }
+      else
+      {
+        console.log(pairToString(p1) + " not equal to " + pairToString(p2));
+        return false;
+      }
+    }
+    else
+    {
+      return testEqual(first(p1), first(p2)) && testEqual(second(p1), second(p2));
+    }
+  }
+
+  function test(name, expected, actual)
+  {
+    if (testEqual(expected, actual))
+    {
+      console.log("Test '" + name + "': [OK]");
+    }
+    else
+    {
+      console.log("Test '" + name + "': [FAIL]");
+    }
+  }
+
+  // listToString
+  function listToString(x)
+  {
+    function convert(x, useParen)
+    {
+      if (x == null)
+      {
+        return "()";
+      }
+      else if (!isPair(x))
+      {
+        return String(x);
+      }
+      else
+      {
+        var leftPa = useParen ? "(" : "";
+        var rightPa = useParen ? ")" : "";
+
+        if (second(x) == null)
+        {
+          return leftPa + convert(first(x), true) + rightPa;
+        }
+        else if (!isPair(second((x))))
+        {
+          return leftPa + convert(first(x), true) + " . " + convert(second(x), false) + rightPa;
+        }
+        else
+        {
+          return leftPa + convert(first(x), true) + " " + convert(second(x), false) + rightPa;
+        }
+      }
+    }
+
+    return convert(x, true);
+  }
+
+  function letExp(name, value, body)
+  {
+    return pair("let", pair(name, pair(value, pair(body, null))));
+  }
+
+  function isLet(x)
+  {
+    return isPair(x) && first(x) == "let";
+  }
+
+  function letName(l)
+  {
+    return first(second(l));
+  }
+
+  function letValue(l)
+  {
+    return first(second(second(l)));
+  }
+
+  function letBody(l)
+  {
+    return first(second(second(second(l))));
+  }
+</script>
+</body>
+</html>
+
+f =>
+  (x => f(v => x(x)(v)))
+  (x => f(v => x(x)(v)))
+
+  (x => fact(v => x(x)(v)))
+  (x => fact(v => x(x)(v)))
+
+  fact(v =>
+      (x => fact(v => x(x)(v)))
+      (x => fact(v => x(x)(v)))
+      (v)
+      )
+
+  fact (number -> number)
+

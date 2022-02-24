@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<script>
+  // 套娃
+  function double(f) {
+    return x => {
+      return f(f(x));
+    }
+  }
+
+  function add1(x) {
+    return x + 1;
+  }
+
+  var double_add1  = double(add1);
+  console.log(double_add1(0), 'double_add1(0)');
+
+  function square(x) {
+    return x * x;
+  }
+
+  var double_square = double(square);
+  console.log(double_square(3), 'double_square(3)');
+
+  var double_double = double(double);
+
+  var double_double_add1 = double_double(add1);
+  console.log(double_double_add1(0), 'double_double_add1(0)');
+
+  var double_double_square = double_double(square);
+  console.log(double_double_square(3), 'double_double_square(3)');
+</script>
+</body>
+</html>

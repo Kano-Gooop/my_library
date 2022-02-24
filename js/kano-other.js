@@ -31,3 +31,12 @@ function ago_text(timestamp) {
     }
   }
 }
+
+// 展开
+function slide_down(element, duration = 0.5) {
+  if (typeof element === 'string') {
+    element = document.querySelector(element);
+  }
+  element.style.transition = 'height ' + duration + 's';
+  element.style.height = element.scrollHeight + 'px';
+}

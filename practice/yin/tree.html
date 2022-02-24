@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+啦啦啦啦啦啦
+<script>
+  var show = console.log;
+
+  function pair(a, b)
+  {
+    return select => select(a, b);
+  }
+
+  function isPair(x)
+  {
+    return typeof (x) == "function";
+  }
+
+  function first(p)
+  {
+    if (isPair(p))
+    {
+      return p((a, b) => a);
+    }
+    else
+    {
+      throw "Not a pair: " + p;
+    }
+  }
+
+  function second(p)
+  {
+    if (isPair(p))
+    {
+      return p((a, b) => b);
+    }
+    else
+    {
+      throw "Not a pair: " + p;
+    }
+  }
+
+  function pairToString(x)
+  {
+    if (!isPair(x))
+    {
+      return String(x);
+    }
+    else
+    {
+      return "(" + pairToString(first(x)) + ", " + pairToString(second(x)) + ")";
+    }
+  }
+
+  var left = first;
+  var right = second;
+
+  function min(a, b)
+  {
+    if (a < b)
+    {
+      return a;
+    }
+    else
+    {
+      return b;
+    }
+  }
+
+  function max(a, b)
+  {
+    if (a > b)
+    {
+      return a;
+    }
+    else
+    {
+      return b;
+    }
+  }
+
+  var tree1 = pair(pair(2, 3), pair(4, 5));
+  var tree2 = pair(pair(2, 3), pair(4, pair(null, 5)));
+
+
+  // size
+  function size(tree)
+  {
+    if (tree == null)
+    {
+      return 0;
+    }
+    else if (!isPair(tree))
+    {
+      return 1;
+    }
+    else
+    {
+      return size(left(tree)) + size(right(tree));
+    }
+  }
+
+  // show("----- size -----");
+  // show(size(tree1));        // 4
+  // show(size(tree2));        // 4
+
+
+  // treeDepth
+  function treeDepth(tree)
+  {
+    if (tree == null)
+    {
+      return 0;
+    }
+    else if (!isPair(tree))
+    {
+      return 0;
+    }
+    else
+    {
+      return max(treeDepth(left(tree)), treeDepth(right(tree))) + 1;
+    }
+  }
+
+  // show("----- treeDepth -----");
+  // show(treeDepth(null));                                      // 0
+  // show(treeDepth(pair(2, null)));                             // 1
+  // show(treeDepth(pair(2, 3)));                                // 1
+  // show(treeDepth(pair(2, pair(3, 4))));                       // 2
+  // show(treeDepth(pair(pair(2, 3), 4)));                       // 2
+  // show(treeDepth(pair(pair(2, 3), pair(4, 5))));              // 2
+  // show(treeDepth(pair(pair(2, 3), pair(4, pair(5, 6)))));     // 3
+  // show(treeDepth(pair(pair(2, pair(3, 4)), pair(5, 6))));     // 3
+  // show(treeDepth(pair(pair(2, pair(null, 4)), pair(5, 6))));  // 3
+
+
+  // treeLast
+  function treeLast(tree)
+  {
+    if (tree == null)
+    {
+      throw "tree is empty";
+    }
+    else if (!isPair(tree))
+    {
+      return tree;
+    }
+    else if (right(tree) == null)
+    {
+      return treeLast(left(tree));
+    }
+    else
+    {
+      return treeLast(right(tree));
+    }
+  }
+
+  // show(treeLast(pair(2, null)));                  // 2
+  // show(treeLast(pair(null, 3)));                  // 3
+  // show(treeLast(pair(2, 3)));                     // 3
+  // show(treeLast(pair(pair(2, 3), 4)));            // 4
+  // show(treeLast(pair(2, pair(3, pair(4, 5)))));   // 5
+  // show(treeLast(null));                           // Uncaught tree is empty
+
+
+  // treeMember
+  function treeMember(x, tree)
+  {
+    if (!isPair(tree))
+    {
+      return tree == x;
+    }
+    else
+    {
+      return treeMember(x, left(tree)) || treeMember(x, right(tree));
+    }
+  }
+
+  // show(treeMember(4, null));                          // false
+  // show(treeMember(4, pair(2, pair(3, pair(4, 5)))));  // true
+  // show(treeMember(6, pair(2, pair(3, pair(4, 5)))));  // false
+
+
+  // treeReplace
+  function treeReplace(tree, pred, y)
+  {
+    if (!isPair(tree))
+    {
+      if (tree == null)
+      {
+        return null;
+      }
+      else if (pred(tree))
+      {
+        return y;
+      }
+      else
+      {
+        return tree;
+      }
+    }
+    else
+    {
+      return pair(treeReplace(left(tree), pred, y), treeReplace(right(tree), pred, y))
+    }
+  }
+
+  // show(pairToString(treeReplace(pair(2, pair(3, pair(4, 5))), x => x > 3, 7)));         // (2, (3, (7, 7)))
+  // show(pairToString(treeReplace(pair(4, pair(3, pair(4, 5))), x => x % 2 == 0, 42)));   // (42, (3, (42, 5)))
+
+
+  // treeMap
+  function treeMap(f, tree)
+  {
+    if (tree == null)
+    {
+      return null;
+    }
+    else if (!isPair(tree))
+    {
+      return f(tree);
+    }
+    else
+    {
+      return pair(treeMap(f, left(tree)), treeMap(f, right(tree)));
+    }
+  }
+
+  // show("----- treeMap -----");
+  // show(pairToString(treeMap(x => x * 2, tree1)));   // ((4, 6), (8, 10))
+  // show(pairToString(treeMap(x => x * x, tree2)));   // ((4, 9), (16, (null, 25)))
+
+
+  // treeEqual
+  function treeEqual(tree1, tree2)
+  {
+    if (!isPair(tree1) && !isPair(tree2))
+    {
+      // 两边都不是pair
+      return tree1 == tree2;
+    }
+    if (!isPair(tree1) || !isPair(tree2))
+    {
+      // 其中一个不是pair
+      return false;
+    }
+    else
+    {
+      // 两边都是pair
+      return treeEqual(left(tree1), left(tree2)) && treeEqual(right(tree1), right(tree2));
+    }
+  }
+
+  // show(treeEqual(2, 2));                                                          // true
+  // show(treeEqual(2, 3));                                                          // false
+  // show(treeEqual(2, null));                                                       // false
+  // show(treeEqual(pair(2, null), pair(2, null)));                                  // true
+  // show(treeEqual(pair(2, 3), pair(2, 3)));                                        // true
+  // show(treeEqual(pair(2, 3), pair(2, 5)));                                        // false
+  // show(treeEqual(pair(2, pair(3, 4)), pair(2, pair(3, 4))));                      // true
+  // show(treeEqual(pair(2, 3), pair(2, pair(3, 4))));                               // false
+  // show(treeEqual(pair(pair(2, 3), pair(4, 5)), pair(pair(2, 3), pair(4, 5))));    // true
+
+
+  // treeMirror
+  function treeMirror(tree)
+  {
+    if (!isPair(tree))
+    {
+      return tree;
+    }
+    else
+    {
+      return pair(treeMirror(right(tree)), treeMirror(left(tree)));
+    }
+  }
+
+  // show(pairToString(treeMirror(null)));                           // null
+  // show(pairToString(treeMirror(pair(2, null))));                  // (null, 2)
+  // show(pairToString(treeMirror(pair(null, 3))));                  // (3, null)
+  // show(pairToString(treeMirror(pair(2, 3))));                     // (3, 2)
+  // show(pairToString(treeMirror(pair(2, pair(3, 4)))));            // ((4, 3), 2)
+  // show(pairToString(treeMirror(pair(pair(2, 3), 4))));            // (4, (3, 2))
+  // show(pairToString(treeMirror(pair(pair(2, 3), pair(4, 5)))));   // ((5, 4), (3, 2))
+
+
+  // treeSum
+  function treeSum(tree)
+  {
+    if (tree == null)
+    {
+      return 0;
+    }
+    else if (!isPair(tree))
+    {
+      return tree;
+    }
+    else
+    {
+      return treeSum(left(tree)) + treeSum(right(tree));
+    }
+  }
+
+  // show("----- treeSum -----");
+  // show(treeSum(tree1));         // 14
+  // show(treeSum(tree2));         // 14
+
+
+  // treeProd
+  function treeProd(tree)
+  {
+    if (tree == null)
+    {
+      return 1;
+    }
+    else if (!isPair(tree))
+    {
+      return tree;
+    }
+    else
+    {
+      return treeProd(left(tree)) * treeProd(right(tree));
+    }
+  }
+
+  // show("----- treeProd -----");
+  // show(treeProd(tree1));        // 120
+  // show(treeProd(tree2));        // 120
+
+
+  // treeMinimum
+  function treeMinimum(tree)
+  {
+    if (tree == null)
+    {
+      throw "tree is empty";
+    }
+    else if (!isPair(tree))
+    {
+      return tree;
+    }
+    else
+    {
+      return min(treeMinimum(left(tree)), treeMinimum(right(tree)));
+    }
+  }
+
+  // show(treeMinimum(pair(3, 2)));                              // 2
+  // show(treeMinimum(pair(pair(4, 3), pair(2, pair(1, 5)))));   // 1
+  // show(treeMinimum(null));                                    // Uncaught tree is empty
+
+
+  // treeMaximum
+  function treeMaximum(tree)
+  {
+    if (tree == null)
+    {
+      throw "tree is empty";
+    }
+    else if (!isPair(tree))
+    {
+      return tree;
+    }
+    else
+    {
+      return max(treeMaximum(left(tree)), treeMaximum(right(tree)));
+    }
+  }
+
+  // show(treeMaximum(pair(3, 2)));                              // 3
+  // show(treeMaximum(pair(pair(4, 3), pair(2, pair(1, 5)))));   // 5
+  // show(treeMaximum(null));                                    // Uncaught tree is empty
+
+
+  // treeFold
+  function treeFold(tree, unit, combine)
+  {
+    if (tree == null)
+    {
+      return unit;
+    }
+    else if (!isPair(tree))
+    {
+      return tree;
+    }
+    else
+    {
+      return combine(treeFold(left(tree), unit, combine), treeFold(right(tree), unit, combine));
+    }
+  }
+
+  function treeSum2(tree)
+  {
+    return treeFold(tree, 0, (x, y) => x + y);
+  }
+
+  function treeProd2(tree)
+  {
+    return treeFold(tree, 1, (x, y) => x * y);
+  }
+
+  // show("----- foldTree -----");
+  // show(treeSum2(tree1));        // 14
+  // show(treeSum2(tree2));        // 14
+  // show(treeProd2(tree1));       // 120
+  // show(treeProd2(tree2));       // 120
+
+  // flatten
+  function append(ls1, ls2)
+  {
+    if (ls1 == null)
+    {
+      return ls2;
+    }
+    else
+    {
+      return pair(left(ls1), append(right(ls1), ls2));
+    }
+  }
+
+  function flatten(tree)
+  {
+    if (tree == null)
+    {
+      return null;
+    }
+    else if (!isPair(tree))
+    {
+      return pair(tree, null);
+    }
+    else
+    {
+      return append(flatten(left(tree)), flatten(right(tree)));
+    }
+  }
+
+  // show("----- flatten -----");
+  // show(pairToString(flatten(tree1)));   // (2, (3, (4, (5, null))))
+  // show(pairToString(flatten(tree2)));   // (2, (3, (4, (5, null))))
+
+
+  // listToString
+  function listToString(x)
+  {
+    function convert(x, useParen)
+    {
+      if (x == null)
+      {
+        return "()";
+      }
+      else if (!isPair(x))
+      {
+        return String(x);
+      }
+      else
+      {
+        var leftPa = useParen ? "(" : "";
+        var rightPa = useParen ? ")" : "";
+
+        if (second(x) == null)
+        {
+          return leftPa + convert(first(x), true) + rightPa;
+        }
+        else if (!isPair(second((x))))
+        {
+          return leftPa + convert(first(x), true) + " . " + convert(second(x), false) + rightPa;
+        }
+        else
+        {
+          return leftPa + convert(first(x), true) + " " + convert(second(x), false) + rightPa;
+        }
+      }
+    }
+
+    return convert(x, true);
+  }
+
+  show("---- listToString ----");
+  show(listToString(null));
+  show(listToString(pair(2, pair(3, null))));
+  show(listToString(pair(pair(2, 3), null)));
+  show(listToString(pair(2, pair(3, 4))));
+  show(listToString(pair(pair(2, 3), 4)));
+  show(listToString(pair(pair(2, pair(3, null)), 4)));
+  show(listToString(pair(pair(2, 3), pair(4, 5))));
+</script>
+</body>
+</html>

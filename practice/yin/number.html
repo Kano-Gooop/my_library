@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+啦啦啦啦啦啦
+<script>
+  var show = console.log;
+
+  // abs
+  function abs(n)
+  {
+    if (n < 0)
+    {
+      return -n;
+    }
+    else
+    {
+      return n;
+    }
+  }
+
+  // show(abs(1));     // 1
+  // show(abs(-5));    // 5
+  // show(abs(9));     // 9
+  // show(abs(0));     // 0
+  // show(abs(-42.8)); // 42.8
+
+
+  // sign
+  function sign(n)
+  {
+    if (n < 0)
+    {
+      return -1;
+    }
+    else if (n == 0)
+    {
+      return 0;
+    }
+    else
+    {
+      return 1;
+    }
+  }
+
+  // show(sign(4));      // -1
+  // show(sign(-17));    // -1
+  // show(sign(0));      // 0
+  // show(sign(4.2));    // 1
+  // show(sign(-34.3));  // -1
+
+
+  // sum
+  function sum(n)
+  {
+    if (n == 0)
+    {
+      return 0;
+    }
+    else
+    {
+      return n + sum(n - 1);
+    }
+  }
+
+  // show(sum(5)); // 15
+
+
+  // accum
+  function accum(n, unit, combine)
+  {
+    if (n == 0)
+    {
+      return unit;
+    }
+    else
+    {
+      return combine(n, accum(n - 1, unit, combine));
+    }
+  }
+
+  function sum2(n)
+  {
+    return accum(n, 0, (x, y) => x + y);
+  }
+
+  // show(sum2(0));  // 0
+  // show(sum2(1));  // 1
+  // show(sum2(5));  // 15
+
+  function fact2(n)
+  {
+    return accum(n, 1, (x, y) => x * y);
+  }
+
+  // show(fact2(0)); // 1
+  // show(fact2(1)); // 1
+  // show(fact2(5)); // 120
+
+
+  // sumFrom
+  function sumFrom(a, b)
+  {
+    if (a == b)
+    {
+      return a;
+    }
+    else
+    {
+      return sumFrom(a, b - 1) + b;
+    }
+  }
+
+  // show(sumFrom(3, 3));  // 3
+  // show(sumFrom(3, 5));  // 12
+
+
+  // expt
+  function expt(b, e)
+  {
+    if (e == 0)
+    {
+      return 1;
+    }
+    else
+    {
+      return b * (expt(b, e - 1))
+    }
+  }
+
+  // show(expt(2, 0));  // 1
+  // show(expt(3, 4));  // 81
+
+
+  // nest
+  function nest(f, n)
+  {
+    if (n == 0)
+    {
+      return x => x;
+    }
+    else
+    {
+      return x => f(nest(f, n - 1)(x));
+    }
+  }
+
+  // show(nest(x => x + 1, 0)(3));  // 3
+  // show(nest(x => x + 1, 7)(0));  // 7
+  // show(nest(x => x * x, 3)(2));  // 256
+
+  // show(nest(x => 1 + 1 / x, 100)(3));   // 1.618033988749895
+  // show(nest(x => 1 + 1 / x, 100)(42));  // 1.618033988749895
+  // show(nest(x => 1 + 1 / x, 100)(-42)); // 1.618033988749895
+
+
+  // fix
+  // function fix(f, start, tolerance)
+  // {
+  //   var next = f(start);
+  //   if (abs(start - next) < tolerance)
+  //   {
+  //     return next;
+  //   }
+  //   else
+  //   {
+  //     return fix(f, next, tolerance);
+  //   }
+  // }
+  //
+  // show(fix(x => 1 + 1 / x, 42, 0.01));                  // 1.6155234657039712
+  // show(fix(x => 1 + 1 / x, -17, 0.0000000000000001));   // 1.618033988749895
+
+  // 限制 fix 的递归深度
+  function fix(f, start, tolerance, depth)
+  {
+    if (depth == 0)
+    {
+      throw "over depth limit";
+    }
+    else
+    {
+      var next = f(start);
+      if (abs(start - next) < tolerance)
+      {
+        return next;
+      }
+      else
+      {
+        return fix(f, next, tolerance, depth - 1);
+      }
+    }
+  }
+
+  // show(fix(x => 1 + 1 / x, -17, 0.0000000000000001, 100));    // 1.618033988749895
+  // show(fix(x => 1 + 1 / x, -17, 0.0000000000000001, 10));     // over depth limit
+  // show(fix(x => x * 2, 56, 0.0000000000000001, 1000));        // over depth limit
+
+
+  // checkStrange
+  function strange(n)
+  {
+    if (n % 2 == 0)  // 如果 n 是偶数
+    {
+      return n / 2;
+    }
+    else
+    {
+      return 3 * n + 1;
+    }
+  }
+
+  function checkStrange(start, depth)
+  {
+    if (depth == 0)
+    {
+      return false;
+    }
+    else
+    {
+      var next = strange(start);
+      if (next == 1)
+      {
+        return true;
+      }
+      else
+      {
+        return checkStrange(next, depth - 1);
+      }
+    }
+  }
+
+  // show(checkStrange(6243, 10000));      // true
+  // show(checkStrange(237, 10));          // false
+  // show(checkStrange(237, 10000));       // true
+  // show(checkStrange(123456789, 176));   // false
+  // show(checkStrange(123456789, 177));   // true
+
+  // randomCheckStrange
+  function randomCheckStrange(range, depth, count)
+  {
+    if (count == 0)
+    {
+      return true;
+    }
+    else
+    {
+      var random = Math.floor(Math.random() * range) + 1;
+
+      if (checkStrange(random, depth))
+      {
+        return randomCheckStrange(range, depth, count - 1);
+      }
+      else
+      {
+        console.log("不满足条件：" + random);
+        return false;
+      }
+    }
+  }
+
+  // show(randomCheckStrange(10000, 10, 1000));
+  // show(randomCheckStrange(10000, 100, 1000));
+  // show(randomCheckStrange(10000, 1000, 1000));
+
+
+  // fib
+  function fib_for(n)
+  {
+    var a = 0, b = 1, sum = 0;
+    for (var i = 0; i < n; i++)
+    {
+      sum = a + b;
+      a = b;
+      b = sum;
+    }
+
+    return sum;
+  }
+
+  function fib(n)
+  {
+    function fib_next(n, a, b)
+    {
+      if (n == 0)
+      {
+        return a;
+      }
+      else
+      {
+        return fib_next(n - 1, b, a + b);
+      }
+    }
+
+    return fib_next(n, 0, 1);
+  }
+
+  // show(fib(0));
+  // show(fib(1));
+  // show(fib(2));
+  // show(fib(3));
+  // show(fib(4));
+  // show(fib(5));
+  // show(fib(6));
+  // show(fib(7));
+  // show(fib(8));
+  // show(fib(9));
+  // show(fib(10));
+  // show(fib(11));
+  // show(fib(12));
+  // show(fib(13));
+  // show(fib(14));
+  // show(fib(15));
+  // show(fib(16));
+  // show(fib(17));
+  // show(fib(18));
+  // show(fib(19));
+  // show(fib(100));
+
+
+  function test(f, label) {
+    console.time(label);
+    f();
+    console.timeEnd(label);
+  }
+
+  test(() => {
+    for (let i = 0; i < 10000; i++) {
+      fib(1000);
+    }
+  }, 'fib');
+
+  test(() => {
+    for (let i = 0; i < 10000; i++) {
+      fib_for(1000);
+    }
+  }, 'fib_for');
+</script>
+</body>
+</html>

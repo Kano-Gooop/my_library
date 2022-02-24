@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="/js-framework/bootstrap/5.0.2/bootstrap.min.css">
+  <link rel="stylesheet" href="css/css1.css" title="Default" media="projection">
+  <style>
+    #copy-txt {
+      /*display: none;*/
+    }
+  </style>
+
+  <title>Document</title>
+</head>
+<body>
+<div id="copy-txt">
+  前方高能预警，朋友圈文案在这里哦：**放大招，一分坐公交，还能领红包！
+</div>
+
+<button onclick="copyTXT()">复制</button>
+
+<script src="/js-framework/bootstrap/5.0.2/bootstrap.bundle.min.js"></script>
+<script>
+  function copyTXT()
+  {
+    var copyDOM = document.querySelector('#copy-txt'); //指定的DOM元素
+    var range = document.createRange(); // 创建容器
+    range.selectNode(copyDOM); // 选中需要复制的节点
+    window.getSelection().addRange(range); // 执行选中元素
+    var successful = document.execCommand('copy');// 执行 copy 操作
+    try
+    {
+      var msg = successful ? 'successful' : 'unsuccessful';
+      console.log('Copy was ' + msg);
+    }
+    catch (err)
+    {
+      console.log('unable to copy');
+    }
+    window.getSelection().removeAllRanges(); // 移除选中的元素
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    .bao {
+      margin: 100px;
+      display: flex;
+    }
+
+    .cha1, .cha2 {
+      width: 1000px;
+      height: 1000px;
+    }
+
+    .cha1 {
+      background: #d21111;
+    }
+
+    .cha2 {
+      background: #a0090f;
+    }
+  </style>
+</head>
+<body>
+<div class="bao">
+  <div class="cha1"></div>
+  <div class="cha2"></div>
+</div>
+<script>
+  /*
+   * now_step     现在要进行的步数（还没砍）
+   * tree_amount  树的数量
+   * tree_leaf    每棵树的树叶量
+   */
+  function get_step(now_step, now_tree_amount, tree_leaf) {
+    // console.log(`当前步数：${now_step} 当前树的数量：${now_tree_amount} 树叶：${tree_leaf}叶`);
+
+    // 下一轮生成的树的数量
+    let next_tree_amont = now_tree_amount * ((now_step + 1n) + (now_step + now_tree_amount)) / 2n;
+    // 下一轮的起始步数
+    let next_step = now_step + now_tree_amount;
+
+    if (tree_leaf === 1n) {
+      return [next_step, next_tree_amont];
+    } else {
+      tree_leaf -= 1n;
+      return get_step(next_step, next_tree_amont, tree_leaf);
+    }
+  }
+
+  // 深度为n的hydra最优步数解
+  function optimal_hydra(n) {
+    let step = 0n, tm = 1n;
+    for (d = 1n; d <= n; d++) {
+      [step, tm] = get_step(step, 1n, tm);
+    }
+
+    return step + tm;
+  }
+
+  var depth = 0;
+  console.log(`深度为${depth}的optimal_hydra的最优解为：` + optimal_hydra(depth));
+
+  // 目前经过的步数
+  // var now_step = 37n;
+  // // 循环次数为目前(2d)树的数量
+  // for (let i = 1n; i <= 37n; i++) {
+  //   now_step = (now_step + 1n) * 2n;
+  // }
+  // console.log(`砍完目前的(2d)树的步数是：${now_step}`);
+</script>
+</body>
+</html>

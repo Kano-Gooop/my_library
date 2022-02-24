@@ -5,42 +5,82 @@
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Document</title>
-  <style>
-    .aa {
-      border: 10px solid #ccc;
-      width: 100px;
-      background: #ddd;
-      transition: all 1s;
-      /*height: 100px;*/
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      text-overflow: ellipsis;
-      display: -webkit-box;
-      overflow: hidden;
-    }
-  </style>
+  <title>test</title>
 </head>
 <body>
-<div class="aa" onclick="">
-  啊啊啊啊啊 <br>
-  啊啊啊啊啊 <br>
-  啊啊啊啊啊 <br>
-  啊啊啊啊啊 <br>
-  啊啊啊啊啊 <br>
-  啊啊啊啊啊 <br>
-  啊啊啊啊啊 <br>
-  啊啊啊啊啊 <br>
-  啊啊啊啊啊 <br>
-  啊啊啊啊啊 <br>
-  啊啊啊啊啊 <br>
-  啊啊啊啊啊 <br>
-  啊啊啊啊啊 <br>
-  啊啊啊啊啊 <br>
-  啊啊啊啊啊 <br>
-  啊啊啊啊啊 <br>
+<div id="app">
+  <ul>
+    <lli v-for="item in mess_list" v-bind:data="item"></lli>
+  </ul>
+
+  <div>{{ xiao }}</div>
+  <div>{{ Math }}</div>
+
+  <button :disabled="button_dis">按钮</button>
+  <div :[attr_name1]="attr">这会是个啥</div>
+  <div v-html="htm"></div>
 </div>
+
+<!--<script src="/js-plugin/clipboard.min.js"></script>-->
+<!--<script src="/js-framework/jquery.min.js"></script>-->
+<!--<script src="/js-framework/vue/vue-2.6.10.js"></script>-->
+<script src="/js-framework/vue/vue-3.2.29.js"></script>
 <script>
+  var a = 70;
+
+  const li = {
+    props: ['data'],
+    template: `
+      <li>{{ data }}</li>`
+  }
+
+  const root_component = {
+    components: {
+      lli: li
+    },
+    data() {
+      return {
+        attr_name1: 'aa',
+        attr_name2: 'bb',
+        attr: 'kkk',
+        button_dis: true,
+        xiao: 15,
+        htm: '<span style="color: #b1dfbb;">kkk</span>',
+        mess_list: [
+          'aaa',
+          'bbb',
+          'ccc'
+        ]
+      }
+    },
+    beforeCreate() {
+      console.log(this, this.xiao, '王八', this.$el);
+    },
+    created() {
+      console.log('xiao是：' + this.xiao, this.$el);
+    },
+    beforeMount() {
+      console.log('beforeMount');
+    },
+    mounted() {
+      console.log('$el', this.$el);
+    },
+    beforeUpdate() {
+      console.log('beforeUpdate', new Date().getTime());
+    },
+    updated() {
+      console.log('updated', new Date().getTime());
+    },
+    beforeUnmount() {
+      console.log('beforeUnmount');
+    },
+    unmounted() {
+      console.log('unmounted');
+    }
+  };
+
+  const app = Vue.createApp(root_component);
+  vm = app.mount('#app');
 </script>
 </body>
 </html>

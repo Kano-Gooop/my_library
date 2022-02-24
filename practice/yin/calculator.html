@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+啦啦啦啦啦啦
+<script>
+  var show = console.log;
+
+  function pair(a, b)
+  {
+    return select => select(a, b);
+  }
+
+  function isPair(x)
+  {
+    return typeof (x) == "function";
+  }
+
+  function first(p)
+  {
+    if (isPair(p))
+    {
+      return p((a, b) => a);
+    }
+    else
+    {
+      throw "Not a pair: " + p;
+    }
+  }
+
+  function second(p)
+  {
+    if (isPair(p))
+    {
+      return p((a, b) => b);
+    }
+    else
+    {
+      throw "Not a pair: " + p;
+    }
+  }
+
+  function pairToString(x)
+  {
+    if (!isPair(x))
+    {
+      return String(x);
+    }
+    else
+    {
+      return "(" + pairToString(first(x)) + ", " + pairToString(second(x)) + ")";
+    }
+  }
+
+  var head = first;
+  var tail = second;
+
+
+  // 二元操作（binop）
+  function binop(op, e1, e2)
+  {
+    return pair("binop", pair(op, pair(e1, pair(e2, null))));
+  }
+
+  function binopOp(exp)
+  {
+    return head(tail(exp));
+  }
+
+  function binopE1(exp)
+  {
+    return head(tail(tail(exp)));
+  }
+
+  function binopE2(exp)
+  {
+    return head(tail(tail((tail(exp)))));
+  }
+
+  function isBinOp(x)
+  {
+    if (!isPair(x))
+    {
+      return false;
+    }
+    else
+    {
+      return head(x) == "binop";
+    }
+  }
+
+  var exp1 = binop("*", 2, 3);
+  var exp2 = binop("+", 1, binop("*", 2, 3));
+  var exp3 = binop("*", binop("+", 1, 2), 3);
+
+  // show("----- binop -----");
+  // show(pairToString(exp1));
+  // show(binopOp(exp1));
+  // show(pairToString(binopE1(exp1)));
+  // show(pairToString(binopE2(exp1)));
+  //
+  // show(pairToString(exp2));
+  // show(binopOp(exp2));
+  // show(pairToString(binopE1(exp2)));
+  // show(pairToString(binopE2(exp2)));
+  //
+  // show(pairToString(exp3));
+  // show(binopOp(exp3));
+  // show(pairToString(binopE1(exp3)));
+  // show(pairToString(binopE2(exp3)));
+
+
+  // toInfix
+  function toInfix(exp)
+  {
+    if (!isBinOp(exp))
+    {
+      return String(exp);
+    }
+    else
+    {
+      return "("
+        + toInfix(binopE1(exp))
+        + " " + binopOp(exp) + " "
+        + toInfix(binopE2(exp))
+        + ")";
+    }
+  }
+
+  // show("----- toPrefix -----");
+  // show(toInfix(exp1));          // (2 * 3)
+  // show(toInfix(exp2));          // (1 + (2 * 3))
+  // show(toInfix(exp3));          // ((1 + 2) * 3)
+
+
+  // toPrefix
+  function toPrefix(exp)
+  {
+    if (!isBinOp(exp))
+    {
+      return String(exp);
+    }
+    else
+    {
+      return "("
+        + binopOp(exp)
+        + " "
+        + toPrefix(binopE1(exp))
+        + " "
+        + toPrefix(binopE2(exp))
+        + ")";
+    }
+  }
+
+  // show("----- toPrefix -----");
+  // show(toPrefix(exp1));         // (* 2 3)
+  // show(toPrefix(exp2));         // (+ 1 (* 2 3))
+  // show(toPrefix(exp3));         // (* (+ 1 2) 3)
+
+
+  // calc
+  function calc(exp)
+  {
+    if (!isBinOp(exp))
+    {
+      return exp;
+    }
+    else
+    {
+      var op = binopOp(exp);
+
+      if (op == "+")
+      {
+        return calc(binopE1(exp)) + calc(binopE2(exp));
+      }
+      else if (op == "*")
+      {
+        return calc(binopE1(exp)) * calc(binopE2(exp));
+      }
+      else if (op == "-")
+      {
+        return calc(binopE1(exp)) - calc(binopE2(exp));
+      }
+      else if (op == "/")
+      {
+        return calc(binopE1(exp)) / calc(binopE2(exp));
+      }
+      else
+      {
+        throw "不支持的操作: " + op;
+      }
+    }
+  }
+
+  // show("----- calc -----");
+  // show(toInfix(exp1) + " = " + calc(exp1));   // (2 * 3) = 6
+  // show(toInfix(exp2) + " = " + calc(exp2));   // (1 + (2 * 3)) = 7
+  // show(toInfix(exp3) + " = " + calc(exp3));   // ((1 + 2) * 3) = 9
+  //
+  // var exp4 = binop("+", binop("*", 3, 3), binop("*", 4, 4));
+  // show(toInfix(exp4) + " = " + calc(exp4));   // ((3 * 3) + (4 * 4)) = 25
+  //
+  // var expError = binop("$", 2, 3);
+  // show(calc(expError));                       // Uncaught 不支持的操作: $
+
+
+  // 改变 binop 的实现
+
+  // 重新定义 binop（用 JavaScript 对象）
+  // function binop(op, e1, e2)
+  // {
+  //   return {
+  //     type: "binop",
+  //     op: op,
+  //     e1: e1,
+  //     e2: e2
+  //   };
+  // }
+  //
+  // function binopOp(exp)
+  // {
+  //   return exp.op;
+  // }
+  //
+  // function binopE1(exp)
+  // {
+  //   return exp.e1;
+  // }
+  //
+  // function binopE2(exp)
+  // {
+  //   return exp.e2;
+  // }
+  //
+  // function isBinOp(x)
+  // {
+  //   if (typeof (x) == "object")
+  //   {
+  //     if (x == null)
+  //     {
+  //       return false;
+  //     }
+  //     else
+  //     {
+  //       return x.type == "binop";
+  //     }
+  //   }
+  //   else
+  //   {
+  //     return false;
+  //   }
+  // }
+
+  // 重新定义 binop（用数组）
+  // function binop(op, e1, e2)
+  // {
+  //   return ["binop", op, e1, e2];
+  // }
+  //
+  // function binopOp(exp)
+  // {
+  //   return exp[1];
+  // }
+  //
+  // function binopE1(exp)
+  // {
+  //   return exp[2];
+  // }
+  //
+  // function binopE2(exp)
+  // {
+  //   return exp[3]
+  // }
+  //
+  // function isBinOp(x)
+  // {
+  //   if (Array.isArray(x))
+  //   {
+  //     return x[0] == "binop";
+  //   }
+  //   else
+  //   {
+  //     return false;
+  //   }
+  // }
+
+
+  // 进阶练习：语法分析器（parser）
+  // 返回字符串 s 的第一个字符，类似于链表的 head
+  function stringHead(s)
+  {
+    if (s != "")
+    {
+      return s.charAt(0);
+    }
+    else
+    {
+      throw "string is empty";
+    }
+  }
+
+  // 返回字符串 s 除了第一个字符以外的部分，类似于链表的 tail。
+  function stringTail(s)
+  {
+    if (s != "")
+    {
+      return s.substring(1);
+    }
+    else
+    {
+      throw "string is empty";
+    }
+  }
+
+  // 判断字符串是否一个数字（一位）
+  function isDigit(s)
+  {
+    return s.length == 1 && "0" <= s && s <= "9";
+  }
+
+  // 判断字符串是否是二元操作符
+  function isOperator(s)
+  {
+    return s == "+"
+      || s == "-"
+      || s == "*"
+      || s == "/";
+  }
+
+  // readNumber
+  function readNumber(s)
+  {
+    if (s == "")
+    {
+      throw "s is empty";
+    }
+    else if (!isDigit(stringHead(s)))
+    {
+      throw "not a number";
+    }
+    else if (stringTail(s) == "" || !isDigit(stringHead(stringTail(s))))
+    {
+      return pair(Number.parseInt(stringHead(s)), stringTail(s));
+    }
+    else
+    {
+      var res = readNumber(stringTail(s));
+      return pair(Number.parseInt(stringHead(s) + first(res)),
+        second(res));
+    }
+  }
+
+  // 测试
+  // test("readNumber 0", pair(123, ""), readNumber("123"));             // Test 'readNumber 0': [OK]
+  // test("readNumber 1", pair(123, "abcd"), readNumber("123abcd"));     // Test 'readNumber 1': [OK]
+  // test("readNumber 2", pair(12, "a3bcd"), readNumber("12a3bcd"));     // Test 'readNumber 2': [OK]
+  // test("readNumber 3", pair(12, " 3abcd"), readNumber("12 3abcd"));   // Test 'readNumber 3': [OK]
+
+
+  // lex
+  function lex(s)
+  {
+    if (s == "")
+    {
+      return null;
+    }
+    else if (stringHead(s) == " ")
+    {
+      return lex(stringTail(s));
+    }
+    else if (isDigit(stringHead(s)))
+    {
+      let res = readNumber(s);
+      return pair(first(res), lex(second(res)));
+    }
+    else if (isOperator(stringHead(s))
+      || stringHead(s) == "("
+      || stringHead(s) == ")")
+    {
+      return pair(stringHead(s), lex(stringTail(s)));
+    }
+    else
+    {
+      throw "Invalid character: " + stringHead(s);
+    }
+  }
+
+  // test("test lex 1",
+  //   pair("(", pair(10, pair("+", pair("(",
+  //     pair(2, pair("*", pair(3, pair(")", pair(")", null))))))))),
+  //   lex("(10+    (2 *    3   ) )"));
+  //
+  // test("test lex 2",
+  //   pair("(", pair(1, pair("+", pair(234, pair("*",
+  //     pair(56, pair("-", pair(7890, pair(")", null))))))))),
+  //   lex("(1 + 234*56-        7890)"));
+  //
+  // try
+  // {
+  //   lex("(10+    (2 *  $$$  3   ) )");
+  // }
+  // catch (e)
+  // {
+  //   test("test lex error 1", "Invalid character: $", e);
+  // }
+
+
+  // parse
+  // function parse(ls)
+  // {
+  //   function unLex(ls)
+  //   {
+  //     if (ls == null)
+  //     {
+  //       return "";
+  //     }
+  //     else
+  //     {
+  //       return head(ls) + unLex(tail(ls));
+  //     }
+  //   }
+  //
+  //   function getE(ls, n)
+  //   {
+  //     if (n == 0)
+  //     {
+  //       if (ls == null)
+  //       {
+  //         throw "Input is empty";
+  //       }
+  //       else if (typeof (head(ls)) == "number")
+  //       {
+  //         if (tail(ls) == null)
+  //         {
+  //           return ls;
+  //         }
+  //         else
+  //         {
+  //           throw "Trailing garbage content: (" + unLex(tail(ls)) + ")"
+  //         }
+  //       }
+  //       else if (head(ls) != "(")
+  //       {
+  //         throw "Expected (, but got: " + head(ls);
+  //       }
+  //       else
+  //       {
+  //         return getE(tail(ls), n + 1);
+  //       }
+  //     }
+  //     else if (n == 1 || n == 3)
+  //     {
+  //       if (ls == null)
+  //       {
+  //         throw "Expected an operand, but input ended";
+  //       }
+  //       else if (head(ls) == "(")
+  //       {
+  //         return pair(pair(first(getE(ls, 0)), first(getE(second(getE(ls, 0)), n + 1))), second(getE(second(getE(ls, 0)), n + 1)));
+  //       }
+  //       else if (typeof (head(ls)) != "number")
+  //       {
+  //         throw "Expected an expression, but got: " + head(ls);
+  //       }
+  //       else
+  //       {
+  //         return pair(pair(head(ls), first(getE(tail(ls), n + 1))), second(getE(tail(ls), n + 1)));
+  //       }
+  //     }
+  //     else if (n == 2)
+  //     {
+  //       if (ls == null)
+  //       {
+  //         throw "Expected operator, but input ended";
+  //       }
+  //       else if (!isOperator(head(ls)))
+  //       {
+  //         throw "Expected operator, but got: " + head(ls);
+  //       }
+  //       else
+  //       {
+  //         return pair(pair(head(ls), first(getE(tail(ls), n + 1))), second(getE(tail(ls), n + 1)));
+  //       }
+  //     }
+  //     else if (n == 4)
+  //     {
+  //       if (ls == null)
+  //       {
+  //         throw "Expected ), but input ended";
+  //       }
+  //       else if (head(ls) != ")")
+  //       {
+  //         throw "Expected ), but got: " + head(ls);
+  //       }
+  //       else
+  //       {
+  //         return getE(tail(ls), n + 1);
+  //       }
+  //     }
+  //     else
+  //     {
+  //       // n == 5
+  //       return pair(null, ls);
+  //     }
+  //   }
+  //
+  //   function parse1(ls)
+  //   {
+  //     if (!isPair(ls))
+  //     {
+  //       return ls;
+  //     }
+  //     else
+  //     {
+  //       return binop(head(tail(ls)), parse1(head(ls)), parse1(head(tail(tail(ls)))));
+  //     }
+  //   }
+  //
+  //   return parse1(head(getE(lex(ls), 0)));
+  // }
+
+  // function parse(ls)
+  // {
+  //   function parse1(ls)
+  //   {
+  //     if (ls == null)
+  //     {
+  //       throw "Input is empty";
+  //     }
+  //     else
+  //     {
+  //       var op, e1, e2, rest;
+  //
+  //       if (typeof (head(ls)) == "number")
+  //       {
+  //         return ls;
+  //       }
+  //       else if (head(ls) != "(")
+  //       {
+  //         throw "Expected (, but got: " + head(ls);
+  //       }
+  //       else
+  //       {
+  //         rest = tail(ls);
+  //
+  //         if (rest == null)
+  //         {
+  //           throw "Expected an operand, but input ended";
+  //         }
+  //         else if (head(rest) == "(")
+  //         {
+  //           let res = parse1(rest);
+  //           e1 = head(res);
+  //           rest = tail(res);
+  //         }
+  //         else
+  //         {
+  //           if (typeof (head(rest)) != "number")
+  //           {
+  //             throw "Expected an expression, but got: " + head(rest);
+  //           }
+  //           else
+  //           {
+  //             e1 = head(rest);
+  //             rest = tail(rest);
+  //           }
+  //         }
+  //
+  //         if (rest == null)
+  //         {
+  //           throw "Expected operator, but input ended";
+  //         }
+  //         else if (!isOperator(head(rest)))
+  //         {
+  //           throw "Expected operator, but got: " + head(ls);
+  //         }
+  //         else
+  //         {
+  //           op = head(rest);
+  //           rest = tail(rest);
+  //         }
+  //
+  //         if (rest == null)
+  //         {
+  //           throw "Expected an operand, but input ended";
+  //         }
+  //         else if (head(rest) == "(")
+  //         {
+  //           let res = parse1(rest);
+  //           e2 = head(res);
+  //           rest = tail(res);
+  //         }
+  //         else
+  //         {
+  //           if (typeof (head(rest)) != "number")
+  //           {
+  //             throw "Expected an expression, but got: " + head(rest);
+  //           }
+  //           else
+  //           {
+  //             e2 = head(rest);
+  //             rest = tail(rest);
+  //           }
+  //         }
+  //
+  //         if (rest == null)
+  //         {
+  //           throw "Expected ), but input ended";
+  //         }
+  //         else if (head(rest) != ")")
+  //         {
+  //           throw "Expected ), but got: " + head(rest);
+  //         }
+  //         else
+  //         {
+  //           rest = tail(rest);
+  //         }
+  //
+  //         return pair(binop(op, e1, e2), rest);
+  //       }
+  //     }
+  //   }
+  //
+  //   let res = parse1(lex(ls));
+  //   if (tail(res) != null)
+  //   {
+  //     throw "Trailing garbage content: (" + head(tail(res)) + ")";
+  //   }
+  //   else if (typeof head(res) == "number")
+  //   {
+  //     return head(res);
+  //   }
+  //   else
+  //   {
+  //     return head(parse1(lex(ls)));
+  //   }
+  // }
+
+  function parse(ls)
+  {
+    function parse1(ls)
+    {
+      if (ls == null)
+      {
+        throw "Input is empty";
+      }
+      else
+      {
+        if (typeof (head(ls)) == "number")
+        {
+          return ls;
+        }
+        else if (head(ls) != "(")
+        {
+          throw "Expected (, but got: " + head(ls);
+        }
+        else
+        {
+          var leftPaRest = tail(ls);
+
+          if (leftPaRest == null)
+          {
+            throw "Expected an operand, but input ended";
+          }
+          else if (head(leftPaRest) == "(")
+          {
+            var res1 = parse1(leftPaRest);
+            var e1 = head(res1);
+            var e1Rest = tail(res1);
+          }
+          else if (typeof (head(leftPaRest)) != "number")
+          {
+            throw "Expected an expression, but got: " + head(leftPaRest);
+          }
+          else
+          {
+            var e1 = head(leftPaRest);
+            var e1Rest = tail(leftPaRest);
+          }
+          
+          if (e1Rest == null)
+          {
+            throw "Expected operator, but input ended";
+          }
+          else if (!isOperator(head(e1Rest)))
+          {
+            throw "Expected operator, but got: " + head(e1Rest);
+          }
+          else
+          {
+            var op = head(e1Rest);
+            var opRest = tail(e1Rest);
+          }
+
+          if (opRest == null)
+          {
+            throw "Expected an operand, but input ended";
+          }
+          else if (head(opRest) == "(")
+          {
+            var res2 = parse1(opRest);
+            var e2 = head(res2);
+            var e2Rest = tail(res2);
+          }
+          else if (typeof (head(opRest)) != "number")
+          {
+            throw "Expected an expression, but got: " + head(opRest);
+          }
+          else
+          {
+            var e2 = head(opRest);
+            var e2Rest = tail(opRest);
+          }
+
+          if (e2Rest == null)
+          {
+            throw "Expected ), but input ended";
+          }
+          else if (head(e2Rest) != ")")
+          {
+            throw "Expected ), but got: " + head(e2Rest);
+          }
+
+          var rightPaRest = tail(e2Rest);
+
+          return pair(binop(op, e1, e2), rightPaRest);
+        }
+      }
+    }
+
+    var res = parse1(lex(ls));
+    if (tail(res) != null)
+    {
+      throw "Trailing garbage content: (" + head(tail(res)) + ")";
+    }
+    else
+    {
+      return head(res);
+    }
+  }
+
+  test("test parse 1", 123, parse("123"));
+  test("test parse 2", pair("binop", pair("+", pair(1, pair(23, null)))), parse("(1 + 23)"));
+  test("test parse nested", pair("binop", pair("+", pair(pair("binop", pair("-", pair(5, pair(2, null)))), pair(pair("binop", pair("*", pair(pair("binop", pair("/", pair(8, pair(4, null)))), pair(34, null)))), null)))), parse("((5 - 2) + ((8 / 4) * 34))"));
+  test("test calc with parse", 71, calc(parse("((5 - 2) + (2 * 34))")));
+  test("test toInfix with parse", "((5 - 2) + (2 * 34))", toInfix(parse("((5 - 2) + (2 * 34))")));
+  test("test toPrefix with parse", "(+ (- 5 2) (* 2 34))", toPrefix(parse("((5 - 2) + (2 * 34))")));
+
+  // 以下测试报错信息
+  try
+  {
+    parse("(/(5 - 2) + (2 * 34))");
+  }
+  catch (e)
+  {
+    test("test parse error 1", "Expected an expression, but got: /", e);
+  }
+  try
+  {
+    parse("((5 - *2) + (2 * 34))");
+  }
+  catch (e)
+  {
+    test("test parse error 2", "Expected an expression, but got: *", e);
+  }
+  try
+  {
+    parse("((5 - 2) + 2 * 34))");
+  }
+  catch (e)
+  {
+    test("test parse error 3", "Expected ), but got: *", e);
+  }
+  try
+  {
+    parse("((5 - 2) (2 * 34))");
+  }
+  catch (e)
+  {
+    test("test parse error 4", "Expected operator, but got: (", e);
+  }
+  try
+  {
+    parse("((5 - 2) + (2 * 34 9))")
+  }
+  catch (e)
+  {
+    test("test parse error 5", "Expected ), but got: 9", e);
+  }
+  try
+  {
+    parse("((5 - 2) + (2 * 34))7")
+  }
+  catch (e)
+  {
+    test("test parse error 6", "Trailing garbage content: (7)", e);
+  }
+
+  // 以下测试不正常的结束，可以先不做。后来再补充。
+  try
+  {
+    parse("");
+  }
+  catch (e)
+  {
+    test("test parse input end 0", "Input is empty", e)
+  }
+  try
+  {
+    parse("(");
+  }
+  catch (e)
+  {
+    test("test parse input end 1", "Expected an operand, but input ended", e)
+  }
+  try
+  {
+    parse("(1");
+  }
+  catch (e)
+  {
+    test("test parse input end 2", "Expected operator, but input ended", e)
+  }
+  try
+  {
+    parse("(1+");
+  }
+  catch (e)
+  {
+    test("test parse input end 3", "Expected an operand, but input ended", e)
+  }
+  try
+  {
+    parse("(1+2");
+  }
+  catch (e)
+  {
+    test("test parse input end 4", "Expected ), but input ended", e)
+  }
+
+  /* ---------------------------------------------------------------------------------------------------------- */
+
+  // 测试工具
+  function testEqual(p1, p2)
+  {
+    if (!isPair(p1) || !isPair(p2))
+    {
+      // 因为是测试工具，这里破例使用 === 操作符
+      if (p1 === p2)
+      {
+        return true;
+      }
+      else
+      {
+        console.log(pairToString(p1) + " not equal to " + pairToString(p2));
+        return false;
+      }
+    }
+    else
+    {
+      return testEqual(first(p1), first(p2)) && testEqual(second(p1), second(p2));
+    }
+  }
+
+  function test(name, expected, actual)
+  {
+    if (testEqual(expected, actual))
+    {
+      console.log("Test '" + name + "': [OK]");
+    }
+    else
+    {
+      console.log("Test '" + name + "': [FAIL]");
+    }
+  }
+</script>
+</body>
+</html>

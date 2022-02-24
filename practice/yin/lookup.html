@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+啦啦啦啦啦啦
+<script>
+  var show = console.log;
+
+  function pair(a, b)
+  {
+    return select => select(a, b);
+  }
+
+  function isPair(x)
+  {
+    return typeof (x) == "function";
+  }
+
+  function first(p)
+  {
+    if (isPair(p))
+    {
+      return p((a, b) => a);
+    }
+    else
+    {
+      throw "Not a pair: " + p;
+    }
+  }
+
+  function second(p)
+  {
+    if (isPair(p))
+    {
+      return p((a, b) => b);
+    }
+    else
+    {
+      throw "Not a pair: " + p;
+    }
+  }
+
+  function pairToString(x)
+  {
+    if (!isPair(x))
+    {
+      return String(x);
+    }
+    else
+    {
+      return "(" + pairToString(first(x)) + ", " + pairToString(second(x)) + ")";
+    }
+  }
+
+  var head = first;
+  var tail = second;
+
+
+  // 线性查找表
+  var emptyTable = null;
+
+  function addTable(key, value, oldTable)
+  {
+    return pair(pair(key, value), oldTable);
+  }
+
+  function lookupTable(key, table)
+  {
+    if (table == emptyTable)
+    {
+      return null;
+    }
+    else if (first(head(table)) == key)
+    {
+      return second(head(table));
+    }
+    else
+    {
+      return lookupTable(key, tail(table));
+    }
+  }
+
+  // 菜单的例子
+  // var menu1 = addTable("pizza", 128,
+  //             addTable("cake", 46,
+  //             addTable("pasta", 68,
+  //             addTable("steak", 258,
+  //             addTable("salad", 45,
+  //             addTable("beer", 35, emptyTable))))));
+  //
+  // show(pairToString(menu1));          // ((pizza, 128), ((cake, 46), ((pasta, 68), ((steak, 258), ((salad, 45), ((beer, 35), null))))))
+  // show(lookupTable("pizza", menu1));  // 128
+  // show(lookupTable("cake", menu1));   // 46
+  // show(lookupTable("beer", menu1));   // 35
+  // show(lookupTable("MSG", menu1));    // null
+  //
+  // // 新的 menu2 给牛排降价
+  // var menu2 = addTable("steak", 200, menu1);
+  //
+  // // ((steak, 200), ((pizza, 128), ((cake, 46), ((pasta, 68), ((steak, 258), ((salad, 45), ((beer, 35), null)))))))
+  // show(pairToString(menu2));
+  //
+  // // ((pizza, 128), ((cake, 46), ((pasta, 68), ((steak, 258), ((salad, 45), ((beer, 35), null))))))
+  // show(pairToString(menu1));
+  //
+  // show(lookupTable("steak", menu2));  // 200
+  // show(lookupTable("steak", menu1));  // 258
+
+
+  // 测试工具
+  function testEqual(p1, p2)
+  {
+    if (!isPair(p1) || !isPair(p2))
+    {
+      // 因为是测试工具，这里破例使用 === 操作符
+      if (p1 === p2)
+      {
+        return true;
+      }
+      else
+      {
+        console.log(pairToString(p1) + " not equal to " + pairToString(p2));
+        return false;
+      }
+    }
+    else
+    {
+      return testEqual(first(p1), first(p2)) && testEqual(second(p1), second(p2));
+    }
+  }
+
+  function test(name, expected, actual)
+  {
+    if (testEqual(expected, actual))
+    {
+      console.log("Test '" + name + "': [OK]");
+    }
+    else
+    {
+      console.log("Test '" + name + "': [FAIL]");
+    }
+  }
+
+
+  // 查找二叉树
+  var emptyBST = null;
+
+  function bst(key, value, left, right)
+  {
+    return pair("bst", pair(key, pair(value, pair(left, pair(right, null)))));
+  }
+
+  function isBST(x)
+  {
+    return isPair(x) && first(x) == "bst";
+  }
+
+  function bstKey(node)
+  {
+    return first(second(node));
+  }
+
+  function bstValue(node)
+  {
+    return first(second(second(node)));
+  }
+
+  function bstLeft(node)
+  {
+    return first(second(second(second(node))));
+  }
+
+  function bstRight(node)
+  {
+    return first(second(second(second(second(node)))));
+  }
+
+  function bstString(node)
+  {
+    function spaces(n)
+    {
+      if (n == 0)
+      {
+        return "";
+      }
+      else
+      {
+        return " " + spaces(n - 1);
+      }
+    }
+
+    function convert(node, level)
+    {
+      if (node == emptyBST)
+      {
+        return "\n";
+      }
+      else
+      {
+        return convert(bstRight(node), level + 1)
+          + spaces(level * 4)
+          + bstKey(node) + ":" + bstValue(node)
+          + convert(bstLeft(node), level + 1);
+      }
+    }
+
+    return convert(node, 0);
+  }
+
+  function addBST(key, value, node)
+  {
+    if (node == emptyBST)
+    {
+      return bst(key, value, emptyBST, emptyBST);
+    }
+    else if (key == bstKey(node))
+    {
+      return bst(key, value, bstLeft(node), bstRight(node));
+    }
+    else if (key < bstKey(node))
+    {
+      return bst(bstKey(node), bstValue(node), addBST(key, value, bstLeft(node)), bstRight(node));
+    }
+    else
+    {
+      return bst(bstKey(node), bstValue(node), bstLeft(node), addBST(key, value, bstRight(node)));
+    }
+  }
+
+  function lookupBST(key, node)
+  {
+    if (node == emptyBST)
+    {
+      return null;
+    }
+    else if (key == bstKey(node))
+    {
+      return bstValue(node);
+    }
+    else if (key < bstKey(node))
+    {
+      return lookupBST(key, bstLeft(node));
+    }
+    else
+    {
+      return lookupBST(key, bstRight(node));
+    }
+  }
+
+  // var bstMenu1 = addBST("beer", 35,
+  //   addBST("salad", 45,
+  //     addBST("steak", 258,
+  //       addBST("pasta", 68,
+  //         addBST("cake", 46,
+  //           addBST("pizza", 128, emptyBST))))));
+  //
+  // show("------- bst --------");
+  // show(bstString(bstMenu1));
+  //
+  // var expect1 =
+  //   pair("bst", pair("pizza", pair(128,
+  //     pair(pair("bst", pair("cake", pair(46,
+  //       pair(pair("bst", pair("beer", pair(35,
+  //         pair(null, pair(null, null))))),
+  //         pair(pair("bst", pair("pasta", pair(68,
+  //           pair(null, pair(null, null))))), null))))),
+  //       pair(pair("bst", pair("steak", pair(258,
+  //         pair(pair("bst", pair("salad", pair(45,
+  //           pair(null, pair(null, null))))),
+  //           pair(null, null))))), null)))));
+  //
+  // test("bst construction", expect1, bstMenu1);
+  //
+  // var saladPrice = lookupBST("salad", bstMenu1);
+  // show(saladPrice); // 45
+  // test("salad price", 45, saladPrice);
+  //
+  // var beerPrice = lookupBST("beer", bstMenu1);
+  // show(beerPrice); // 35
+  // test("beer price", 35, beerPrice);
+  //
+  // var msgPrice = lookupBST("MSG", bstMenu1);
+  // show(msgPrice); // null
+  // test("MSG price", null, msgPrice);
+  //
+  // var bstMenu2 = addBST("steak", 200, bstMenu1);
+  // show(bstString(bstMenu2));
+  //
+  // var expect2 =
+  //   pair("bst", pair("pizza", pair(128,
+  //     pair(pair("bst", pair("cake", pair(46,
+  //       pair(pair("bst", pair("beer", pair(35,
+  //         pair(null, pair(null, null))))),
+  //         pair(pair("bst", pair("pasta", pair(68,
+  //           pair(null, pair(null, null))))), null))))),
+  //       pair(pair("bst", pair("steak", pair(200,
+  //         pair(pair("bst", pair("salad", pair(45,
+  //           pair(null, pair(null, null))))),
+  //           pair(null, null))))), null)))));
+  //
+  // test("bst update steak", expect2, bstMenu2);
+  //
+  // show(bstString(bstMenu1));
+  //
+  // test("bstMenu1 unchanged", expect1, bstMenu1);
+  //
+  // var newSteakPrice = lookupBST("steak", bstMenu2);
+  // show(newSteakPrice); // 200
+  // test("new steak price", 200, newSteakPrice);
+  //
+  // var oldSteakPrice = lookupBST("steak", bstMenu1);
+  // show(oldSteakPrice); // 258
+  // test("old steak price", 258, oldSteakPrice);
+</script>
+</body>
+</html>

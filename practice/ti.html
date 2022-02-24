@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<script>
+  /*
+ * 满300 - 40
+ * 车厘子 m 50一斤 满3减1
+ * 猕猴桃 n 15一斤 满4减1
+ */
+  function pay(m, n) {
+    let m_price, n_price, total;
+
+    m_price = (m - parseInt(m / 4)) * 50;
+
+    n_price = (n - parseInt(n / 5)) * 15;
+
+    total = m_price + n_price;
+    total = parseInt(total / 340) * 300 + Math.min(total % 340, 300);
+
+    return total;
+  }
+
+  console.log(5, 4, pay(5, 4));
+</script>
+</body>
+</html>

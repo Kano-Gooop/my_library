@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+啦啦啦啦啦啦
+<script>
+  var show = console.log;
+
+  function pair(a, b)
+  {
+    return select => select(a, b);
+  }
+
+  function isPair(x)
+  {
+    return typeof (x) == "function";
+  }
+
+  function first(p)
+  {
+    if (isPair(p))
+    {
+      return p((a, b) => a);
+    }
+    else
+    {
+      throw "Not a pair: " + p;
+    }
+  }
+
+  function second(p)
+  {
+    if (isPair(p))
+    {
+      return p((a, b) => b);
+    }
+    else
+    {
+      throw "Not a pair: " + p;
+    }
+  }
+
+  function pairToString(x)
+  {
+    if (!isPair(x))
+    {
+      return String(x);
+    }
+    else
+    {
+      return "(" + pairToString(first(x)) + ", " + pairToString(second(x)) + ")";
+    }
+  }
+
+  var head = first;
+  var tail = second;
+
+  // 线性查找表
+  var emptyTable = null;
+
+  function addTable(key, value, oldTable)
+  {
+    return pair(pair(key, value), oldTable);
+  }
+
+  function lookupTable(key, table)
+  {
+    if (table == emptyTable)
+    {
+      return null;
+    }
+    else if (first(head(table)) == key)
+    {
+      return second(head(table));
+    }
+    else
+    {
+      return lookupTable(key, tail(table));
+    }
+  }
+
+  // 查找二叉树
+  var emptyBST = null;
+
+  function bst(key, value, left, right)
+  {
+    return pair("bst", pair(key, pair(value, pair(left, pair(right, null)))));
+  }
+
+  function isBST(x)
+  {
+    return isPair(x) && first(x) == "bst";
+  }
+
+  function bstKey(node)
+  {
+    return first(second(node));
+  }
+
+  function bstValue(node)
+  {
+    return first(second(second(node)));
+  }
+
+  function bstLeft(node)
+  {
+    return first(second(second(second(node))));
+  }
+
+  function bstRight(node)
+  {
+    return first(second(second(second(second(node)))));
+  }
+
+  function bstString(node)
+  {
+    function spaces(n)
+    {
+      if (n == 0)
+      {
+        return "";
+      }
+      else
+      {
+        return " " + spaces(n - 1);
+      }
+    }
+
+    function convert(node, level)
+    {
+      if (node == emptyBST)
+      {
+        return "\n";
+      }
+      else
+      {
+        return convert(bstRight(node), level + 1)
+          + spaces(level * 4)
+          + bstKey(node) + ":" + bstValue(node)
+          + convert(bstLeft(node), level + 1);
+      }
+    }
+
+    return convert(node, 0);
+  }
+
+  function addBST(key, value, node)
+  {
+    if (node == emptyBST)
+    {
+      return bst(key, value, emptyBST, emptyBST);
+    }
+    else if (key == bstKey(node))
+    {
+      return bst(key, value, bstLeft(node), bstRight(node));
+    }
+    else if (key < bstKey(node))
+    {
+      return bst(bstKey(node), bstValue(node), addBST(key, value, bstLeft(node)), bstRight(node));
+    }
+    else
+    {
+      return bst(bstKey(node), bstValue(node), bstLeft(node), addBST(key, value, bstRight(node)));
+    }
+  }
+
+  function lookupBST(key, node)
+  {
+    if (node == emptyBST)
+    {
+      return null;
+    }
+    else if (key == bstKey(node))
+    {
+      return bstValue(node);
+    }
+    else if (key < bstKey(node))
+    {
+      return lookupBST(key, bstLeft(node));
+    }
+    else
+    {
+      return lookupBST(key, bstRight(node));
+    }
+  }
+
+  var emptyEnv = emptyBST;
+  var extEnv = addBST;
+  var lookupEnv = lookupBST;
+
+  // ---------- variable -----------
+  // 变量只有一个成员，就是它的名字。
+  function variable(name)
+  {
+    return pair("variable", pair(name, null));
+  }
+
+  function isVariable(x)
+  {
+    return isPair(x) && first(x) == "variable";
+  }
+
+  function variableName(v)
+  {
+    return first(second(v));
+  }
+
+  // ---------- function -----------
+  // 为了简单，我们的函数只有一个参数。
+  // 函数的参数（param）是一个字符串（不是 variable）。
+  // 函数体（body）是一个任意的表达式。
+  function fun(param, body)
+  {
+    return pair("function", pair(param, pair(body, null)));
+  }
+
+  function isFunction(x)
+  {
+    return isPair(x) && first(x) == "function";
+  }
+
+  function funParam(f)
+  {
+    return first(second(f));
+  }
+
+  function funBody(f)
+  {
+    return first(second(second(f)));
+  }
+
+  // ---------- closure -----------
+  // 闭包的两个成员是：函数，函数产生时的环境。
+  function closure(fun, env)
+  {
+    return pair("closure", pair(fun, pair(env, null)));
+  }
+
+  function isClosure(x)
+  {
+    return isPair(x) && first(x) == "closure";
+  }
+
+  function closureFun(c)
+  {
+    return first(second(c));
+  }
+
+  function closureEnv(c)
+  {
+    return first(second(second(c)));
+  }
+
+  // ---------- call -----------
+  // 调用的第一个成员叫"操作符"（operator），第二个成员叫操作数（operand 或 argument）。
+  // 操作符可能是以下几种：
+  // 1. 函数表达式（匿名函数）
+  // 2. 指向函数的变量
+  // 3. 另一个调用，调用了返回函数的函数（比如 compose）
+  function call(op, arg)
+  {
+    return pair("call", pair(op, pair(arg, null)));
+  }
+
+  function isCall(x)
+  {
+    return isPair(x) && first(x) == "call";
+  }
+
+  function callOp(c)
+  {
+    return first(second(c));
+  }
+
+  function callArg(c)
+  {
+    return first(second(second(c)));
+  }
+
+  // ------------ binop -------------
+  function binop(op, e1, e2)
+  {
+    return pair("binop", pair(op, pair(e1, pair(e2, null))));
+  }
+
+  function isBinOp(x)
+  {
+    return isPair(x) && first(x) == "binop";
+  }
+
+  function binopOp(binop)
+  {
+    return first(second(binop));
+  }
+
+  function binopE1(binop)
+  {
+    return first(second(second(binop)));
+  }
+
+  function binopE2(binop)
+  {
+    return first(second(second(second(binop))));
+  }
+
+  function toInfix(exp)
+  {
+    if (!isBinOp(exp))
+    {
+      return String(exp);
+    }
+    else
+    {
+      return "("
+        + toInfix(binopE1(exp))
+        + " " + binopOp(exp) + " "
+        + toInfix(binopE2(exp))
+        + ")";
+    }
+  }
+
+  function basicType(name)
+  {
+    return pair("basicType", pair(name, null));
+  }
+
+  function isBasicType(x)
+  {
+    return isPair(x) && first(x) == "basicType";
+  }
+
+  function basicTypeName(bt)
+  {
+    return first(second(bt));
+  }
+
+  // 定义基本类型变量，以后就用这几个变量，而不再重新构造它们。
+  var numberType = basicType("number");
+  var stringType = basicType("string");
+  var booleanType = basicType("boolean");
+
+
+  function funType(inType, outType)
+  {
+    return pair("funType", pair(inType, pair(outType, null)));
+  }
+
+  function isFunType(x)
+  {
+    return isPair(x) && first(x) == "funType";
+  }
+
+  function funTypeIn(ft)
+  {
+    return first(second(ft));
+  }
+
+  function funTypeOut(ft)
+  {
+    return first(second(second(ft)));
+  }
+
+
+  function claim(claimType, claimExp)
+  {
+    return pair("claim", pair(claimType, pair(claimExp, null)));
+  }
+
+  function isClaim(x)
+  {
+    return isPair(x) && first(x) == "claim";
+  }
+
+  function claimType(c)
+  {
+    return first(second(c));
+  }
+
+  function claimExp(c)
+  {
+    return first(second(second(c)));
+  }
+
+  function typeToString(t)
+  {
+    if (isBasicType(t))
+    {
+      return basicTypeName(t);
+    }
+    else if (isFunType(t))
+    {
+      return "(" + typeToString(funTypeIn(t)) + " -> " + typeToString(funTypeOut(t)) + ")";
+    }
+    else
+    {
+      throw "Unexpected type: " + t;
+    }
+  }
+
+  function subtype(t1, t2)
+  {
+    if (isBasicType(t1) && isBasicType(t2))
+    {
+      return basicTypeName(t1) == basicTypeName(t2);
+    }
+    else if (isFunType(t1) && isFunType(t2))
+    {
+      return subtype(funTypeIn(t2), funTypeIn(t1)) &&
+        subtype(funTypeOut(t1), funTypeOut(t2));
+    }
+    else
+    {
+      return false;
+    }
+  }
+
+  function equalType(t1, t2)
+  {
+    return subtype(t1, t2) && subtype(t2, t1);
+  }
+
+  // 类型检查器
+  function typecheck(exp)
+  {
+    function typecheck(exp, env)
+    {
+      if (typeof (exp) == "number")
+      {
+        return numberType;
+      }
+      else if (typeof (exp) == "string")
+      {
+        return stringType;
+      }
+      else if (typeof (exp) == "boolean")
+      {
+        return booleanType;
+      }
+      else if (isVariable(exp))
+      {
+        var v = lookupEnv(variableName(exp), env);
+        if (v != null)
+        {
+          return v;
+        }
+        else
+        {
+          throw "Unbound variable: " + variableName(exp);
+        }
+      }
+      else if (isClaim(exp))
+      {
+        if (isFunType(claimType(exp)))
+        {
+          if (isFunction(claimExp(exp)))
+          {
+            var funType1 = claimType(exp);
+            var fun1 = claimExp(exp);
+
+            var newEnv = extEnv(funParam(fun1), funTypeIn(funType1), env);
+            var bodyType = typecheck(funBody(fun1), newEnv);
+
+            if (subtype(bodyType, funTypeOut(funType1)))
+            {
+              return funType1;
+            }
+            else
+            {
+              throw "Expected output type is "
+              + typeToString(funTypeOut(funType1))
+              + ", but got: "
+              + typeToString(bodyType);
+            }
+          }
+          else
+          {
+            throw "not function";
+          }
+        }
+        else
+        {
+          throw "Expected function type, but got: " + typeToString(claimType(exp));
+        }
+      }
+      else if (isCall(exp))
+      {
+        var opType = typecheck(callOp(exp), env);
+        var argType = typecheck(callArg(exp), env);
+
+        if (isFunType(opType))
+        {
+          if (subtype(argType, funTypeIn(opType)))
+          {
+            return funTypeOut(opType);
+          }
+          else
+          {
+            throw "Incorrect input type. Expected: "
+            + typeToString(funTypeIn(opType))
+            + ", but got: "
+            + typeToString(argType);
+          }
+        }
+        else
+        {
+          throw "Calling non-function: " + expToString(callOp(exp));
+        }
+      }
+      else if (isIfExp(exp))
+      {
+        var conditionType = typecheck(ifCondition(exp), env);
+
+        if (equalType(conditionType, booleanType))
+        {
+          var trueBranchType = typecheck(ifTrueBranch(exp), env);
+          var falseBranchType = typecheck(ifFalseBranch(exp), env);
+          if (equalType(trueBranchType, falseBranchType))
+          {
+            return trueBranchType;
+          }
+          else
+          {
+            throw "Branch types do not match: "
+            + typeToString(trueBranchType)
+            + " and "
+            + typeToString(falseBranchType);
+          }
+        }
+        else
+        {
+          throw "Condition must be boolean, but got: " + typeToString(conditionType);
+        }
+      }
+      else if (isBinOp(exp))
+      {
+        var mathOp = binopOp(exp);
+        var e1Type = typecheck(binopE1(exp), env);
+        var e2Type = typecheck(binopE2(exp), env);
+
+        if (equalType(e1Type, numberType) && equalType(e2Type, numberType))
+        {
+          if (mathOp == "+" || mathOp == "-" || mathOp == "*" || mathOp == "/")
+          {
+            return numberType;
+          }
+          else if (mathOp == "<" || mathOp == ">" || mathOp == "==")
+          {
+            return booleanType;
+          }
+          else
+          {
+            throw "不支持的操作: " + mathOp;
+          }
+        }
+        else
+        {
+          throw "Incorrect input type: "
+          + typeToString(e1Type)
+          + " and "
+          + typeToString(e2Type);
+        }
+      }
+      else
+      {
+        throw "illegal expression";
+      }
+    }
+
+    return typecheck(exp, emptyEnv);
+  }
+
+
+  // // basic types
+  // test("test basic type number", "number", typeToString(typecheck(2)));
+  // test("test basic type string", "string", typeToString(typecheck("hi")));
+  // test("test basic type boolean", "boolean", typeToString(typecheck(true)));
+  //
+  // // binop
+  // test("test binop (1 + 2)", "number", typeToString(typecheck(binop("+", 1, 2))));
+  // test("test binop (1 + (2 * 3))", "number", typeToString(typecheck(binop("+", 1, binop("*", 2, 3)))));
+  // test("test binop (1 < 2)", "boolean", typeToString(typecheck(binop("<", 1, 2))));
+  // test("test binop (1 < (2 * 3))", "boolean", typeToString(typecheck(binop("<", 1, binop("*", 2, 3)))));
+  //
+  // try
+  // {
+  //   typecheck(binop("*", 1, "hi"));
+  //   console.log("Test binop input error (1 * 'hi') [FAIL]");
+  // }
+  // catch (e)
+  // {
+  //   test("Test binop input error  (1 * 'hi')", "Incorrect input type: number and string", e);
+  // }
+  //
+  // try
+  // {
+  //   typecheck(binop("<", 1, binop("<", 2, 3)));
+  //   console.log("test binop type error (1 < (2 < 3)) [FAIL]");
+  // }
+  // catch (e)
+  // {
+  //   test("test binop type error (1 < (2 < 3))", "Incorrect input type: number and boolean", e);
+  // }
+  //
+  // // function
+  // test("test function type constant number", "(number -> number)", typeToString(typecheck(claim(funType(numberType, numberType), fun("x", 42)))));
+  // test("test function type constant string", "(number -> string)", typeToString(typecheck(claim(funType(numberType, stringType), fun("x", "hi")))));
+  // test("test function type identity number", "(number -> number)", typeToString(typecheck(claim(funType(numberType, numberType), fun("x", variable("x"))))));
+  // test("test function type identity string", "(string -> string)", typeToString(typecheck(claim(funType(stringType, stringType), fun("x", variable("x"))))));
+  // try
+  // {
+  //   typecheck(claim(funType(numberType, numberType), fun("x", variable("y"))));
+  // }
+  // catch (e)
+  // {
+  //   test("Test unbound variable", "Unbound variable: y", e);
+  // }
+  //
+  // try
+  // {
+  //   typecheck(claim(numberType, fun("x", variable("x"))));
+  //   console.log("Test type error non-function type [FAIL]");
+  // }
+  // catch (e)
+  // {
+  //   test("Test type error non-function type", "Expected function type, but got: number", e);
+  // }
+  //
+  // try
+  // {
+  //   typecheck(claim(funType(numberType, stringType), fun("x", variable("x"))));
+  //   console.log("Test function type error id [FAIL]");
+  // }
+  // catch (e)
+  // {
+  //   test("Test function type error id", "Expected output type is string, but got: number", e);
+  // }
+  //
+  // test("test function type x => (x == 3)", "(number -> boolean)", typeToString(typecheck(claim(funType(numberType, booleanType), fun("x", binop("==", variable("x"), 3))))));
+  //
+  // // call
+  // var callId1 = call(claim(funType(numberType, numberType), fun("x", variable("x"))), 2);
+  // test("test call identity", "number", typeToString(typecheck(callId1)));
+  // try
+  // {
+  //   typecheck(call(1, 2));
+  //   test("Test callOp type error [FAIL]");
+  // }
+  // catch (e)
+  // {
+  //   test("Test callOp type error", "Calling non-function: 1", e);
+  // }
+  //
+  // var callIdError1 = call(claim(funType(numberType, numberType), fun("x", variable("x"))), "hi");
+  // try
+  // {
+  //   typecheck(callIdError1);
+  //   test("Test input type error [FAIL]");
+  // }
+  // catch (e)
+  // {
+  //   test("Test input type error", "Incorrect input type. Expected: number, but got: string", e);
+  // }
+  //
+  // var callBinop1 = call(claim(funType(numberType, numberType), fun("x", binop("+", variable("x"), 3))), 2);
+  // test("Test call (x => (x + 3)", "number", typeToString(typecheck(callBinop1)));
+  //
+  // var callBinop2 = call(claim(funType(numberType, booleanType), fun("x", binop("<", variable("x"), 3))), 2);
+  // test("Test call (x => (x < 3)", "boolean", typeToString(typecheck(callBinop2)));
+  //
+  // // curried function
+  // var curriedFun1 = claim(funType(numberType, funType(numberType, numberType)),
+  //   fun("x", claim(funType(numberType, numberType), fun("y", variable("y")))));
+  // test("test curried function", "(number -> (number -> number))", typeToString(typecheck(curriedFun1)));
+  // test("test curried function call 1", "(number -> number)", typeToString(typecheck(call(curriedFun1, 2))));
+  // test("test curried function call 2", "number", typeToString(typecheck(call(call(curriedFun1, 2), 3))));
+  //
+  // // if
+  // var iftype1 = claim(funType(numberType, numberType), fun("x", ifExp(binop("<", variable("x"), 0), 2, 3)));
+  // test("Test branch type", "(number -> number)", typeToString(typecheck(iftype1)));
+  // var iftypeError1 = claim(funType(numberType, numberType), fun("x", ifExp(binop("<", variable("x"), 0), "2", 3)));
+  // try
+  // {
+  //   typecheck(iftypeError1);
+  //   console.log("Test branch type mismatch [FAIL]");
+  // }
+  // catch (e)
+  // {
+  //   test("Test branch type mismatch", "Branch types do not match: string and number", e);
+  // }
+  //
+  // try
+  // {
+  //   typecheck(ifExp(1, 2, 3));
+  //   console.log("Test branch condition type [FAIL]");
+  // }
+  // catch (e)
+  // {
+  //   test("Test branch condition type", "Condition must be boolean, but got: number", e);
+  // }
+
+
+  // 思考题
+  // 1. 为什么类型检查器在函数的分支处理函数体，而解释器在调用的分支处理函数体？
+  // 因为 类型检查器 通过 声明类型 就可以求出函数体的类型，而 解释器 在调用时才会将参数的值加入环境，进而求得函数体的值
+
+  // 2. 为什么类型检查器里面没有闭包这种概念？
+  // 解释器 中需要闭包是因为对函数求值时如果只返回函数本身则会丢失环境，所以需要闭包来记忆这个环境。而在 类型检查器 中
+  // 不存在丢失环境的情况，参数的类型由 声明输入类型 给出并加入环境，之后会通过递归将环境一层一层的传下去
+
+  // 3. Y combinator 的类型是什么？你能否用这个练习里的方式构造写出有类型标记的 Y combinator 而且使它通过类型检查？
+  // 类型为 ((number -> number) -> (number -> number)) -> (number -> number)
+
+  var YExp = claim(
+    funType(funType(funType(numberType, numberType), funType(numberType, numberType)), funType(numberType, numberType)),
+    fun("f",
+      call(
+        claim(
+          funType(funType(numberType, numberType), numberType),
+          fun("x", call(variable("f"),
+            claim(
+              funType(numberType, funType(numberType, numberType)),
+              fun("v", call(call(variable("x"), variable("x")), variable("v")))
+            )
+          ))),
+        claim(
+          funType(funType(numberType, numberType), numberType),
+          fun("x", call(variable("f"),
+            claim(
+              funType(numberType, funType(numberType, numberType)),
+              fun("v", call(call(variable("x"), variable("x")), variable("v")))
+            )
+          )))
+      )));
+
+  console.log(typecheck(YExp));
+
+  /* ---------------------------------------------------------------------------------------------------------- */
+
+  // 测试工具
+  function testEqual(p1, p2)
+  {
+    if (!isPair(p1) || !isPair(p2))
+    {
+      // 因为是测试工具，这里破例使用 === 操作符
+      if (p1 === p2)
+      {
+        return true;
+      }
+      else
+      {
+        console.log(pairToString(p1) + " not equal to " + pairToString(p2));
+        return false;
+      }
+    }
+    else
+    {
+      return testEqual(first(p1), first(p2)) && testEqual(second(p1), second(p2));
+    }
+  }
+
+  function test(name, expected, actual)
+  {
+    if (testEqual(expected, actual))
+    {
+      console.log("Test '" + name + "': [OK]");
+    }
+    else
+    {
+      console.log("Test '" + name + "': [FAIL]");
+    }
+  }
+
+  // listToString
+  function listToString(x)
+  {
+    function convert(x, useParen)
+    {
+      if (x == null)
+      {
+        return "()";
+      }
+      else if (!isPair(x))
+      {
+        return String(x);
+      }
+      else
+      {
+        var leftPa = useParen ? "(" : "";
+        var rightPa = useParen ? ")" : "";
+
+        if (second(x) == null)
+        {
+          return leftPa + convert(first(x), true) + rightPa;
+        }
+        else if (!isPair(second((x))))
+        {
+          return leftPa + convert(first(x), true) + " . " + convert(second(x), false) + rightPa;
+        }
+        else
+        {
+          return leftPa + convert(first(x), true) + " " + convert(second(x), false) + rightPa;
+        }
+      }
+    }
+
+    return convert(x, true);
+  }
+
+  // --------- if ---------
+  function ifExp(condition, trueBranch, falseBranch)
+  {
+    return pair("ifExp", pair(condition, pair(trueBranch, pair(falseBranch, null))));
+  }
+
+  function isIfExp(x)
+  {
+    return isPair(x) && first(x) == "ifExp";
+  }
+
+  function ifCondition(ifexp)
+  {
+    return first(second(ifexp));
+  }
+
+  function ifTrueBranch(ifexp)
+  {
+    return first(second(second(ifexp)));
+  }
+
+  function ifFalseBranch(ifexp)
+  {
+    return first(second(second(second(ifexp))));
+  }
+
+  // expToString（把程序转换成字符串）
+  function expToString(exp)
+  {
+    if (typeof (exp) == "number" || typeof (exp) == "string")
+    {
+      return String(exp);
+    }
+    else if (isVariable(exp))
+    {
+      return variableName(exp);
+    }
+    else if (isFunction(exp))
+    {
+      return funParam(exp) + " => " + expToString(funBody(exp));
+    }
+    else if (isCall(exp))
+    {
+      if (isFunction(callOp(exp)))
+      {
+        return "(" + expToString(callOp(exp)) + ")(" + expToString(callArg(exp)) + ")";
+      }
+      else
+      {
+        return expToString(callOp(exp)) + "(" + expToString(callArg(exp)) + ")";
+      }
+    }
+    else if (isBinOp(exp))
+    {
+      return "(" + expToString(binopE1(exp)) + " " + binopOp(exp) + " " + expToString(binopE2(exp)) + ")";
+    }
+    else if (isClosure(exp))
+    {
+      return expToString(closureFun(exp)) + ": " + listToString(closureEnv(exp));
+    }
+    else
+    {
+      throw "illegal expression";
+    }
+  }
+</script>
+</body>
+</html>
