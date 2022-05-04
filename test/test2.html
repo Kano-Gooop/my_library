@@ -5,67 +5,150 @@
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-<!--  <link rel="stylesheet" href="/js-framework/bootstrap/5.0.2/bootstrap.min.css">-->
+  <!--  <link rel="stylesheet" href="/js-framework/bootstrap/5.0.2/bootstrap.min.css">-->
   <link rel="stylesheet" href="date/date.css">
   <title>Document</title>
   <style>
+    #xiao {
+      font-family: ali, sans-serif;
+      /*font-weight: 900;*/
+    }
   </style>
 </head>
 <body>
-<input type="text" id="date3" data-options="{'type':'YYYY-MM-DD hh:mm','beginYear':2010,'endYear':2100}" style="width:166px;height:19px;">
+
+<div id="xiao">心脑健康风险测试 中国制造</div>
 
 <!--<script src="/js-framework/vue-2.6.10.js"></script>-->
 <script src="/js-framework/jquery.min.js"></script>
-<script src="./date/jquery.date.js"></script>
-<script type="module">
-  $.date('#date3');
-  // new Vue({
-  //   el: '#app',
-  //   data: {
-  //     kuai_css: {
-  //       left: '0',
-  //       top: '0'
-  //     }
-  //   },
-  //   created()
-  //   {
-  //     document.addEventListener('keydown', e =>
-  //     {
-  //       switch (e.code)
-  //       {
-  //         case 'ArrowUp':
-  //           this.kuai_css.top = parseInt(this.kuai_css.top) - 3 + 'px';
-  //           break;
-  //         case 'ArrowDown':
-  //           this.kuai_css.top = parseInt(this.kuai_css.top) + 3 + 'px';
-  //           break;
-  //         case 'ArrowLeft':
-  //           this.kuai_css.left = parseInt(this.kuai_css.left) - 3 + 'px';
-  //           break;
-  //         case 'ArrowRight':
-  //           this.kuai_css.left = parseInt(this.kuai_css.left) + 3 + 'px';
-  //           break;
-  //       }
-  //       console.log(e.code);
-  //     })
-  //   },
-  //   methods: {}
-  // });
-  function shi(num) {
-    return new Promise((resolve, reject) => {
-      if (num === 10) {
-        reject('鸟人');
-      } else {
-        resolve(num + 5);
-      }
-    });
+<script src="/js/kano-common.js"></script>
+<script>
+  // area
+  var pi = Math.PI;
+  var area = r => pi * r * r;
+
+
+  // circum
+  var circum = r => 2 * pi * r;
+
+
+  // innerArea
+  function innerArea(a, b)
+  {
+    let r = Math.sqrt(a * a + b * b) / 2;
+    return area(r);
   }
 
-  try {
-    let res = await shi(10);
-  } catch (e)
+
+  // two
+  var two = f => x => f(f(x));
+
+
+  // three, four
+  var three = f => x => f(f(f(x)));
+  var four = f => x => f(f(f(f(x))));
+
+
+  // succ
+  // function succ(n)
+  // {
+  //   return f => x => f(n(f)(x));
+  // }
+
+
+  // 用 compose 表达 succ
+  function compose(f, g)
   {
-    console.log(e, '这是 e');
+    return x => f(g(x));
+  }
+
+  function succ(n)
+  {
+    return f => compose(f, n(f));
+  }
+
+
+  // toNumber
+  function toNumber(n)
+  {
+    return n(x => x + 1)(0);
+  }
+
+
+  // zero
+  var zero = f => x => x;
+  var one = succ(zero);
+  var two = succ(one);
+  var three = succ(two);
+  var four = succ(three);
+  var five = succ(four);
+  var six = succ(five);
+  var seven = succ(six);
+  var eight = succ(seven);
+  var nine = succ(eight);
+
+
+  // plus
+  // function plus(m, n)
+  // {
+  //   return f => x => n(f)(m(f)(x));
+  // }
+
+
+  // 用 compose 表达 plus
+  function plus(m, n)
+  {
+    return f => compose(n(f), m(f));
+  }
+
+
+  // mult
+  // function mult(m, n)
+  // {
+  //   return f => n(m(f));
+  // }
+
+
+  // 用 compose 表达 mult
+  var mult = compose;
+
+
+  // pow
+  function pow(m, n)
+  {
+    return n(m);
+  }
+
+
+  // pair
+  function pair(a, b)
+  {
+    return select => select(a, b);
+  }
+
+  function first(p)
+  {
+    return p((a, b) => a);
+  }
+
+  function second(p)
+  {
+    return p((a, b) => b);
+  }
+
+
+  // pred
+  function pred(n)
+  {
+    return first(n(p => pair(second(p), succ(second(p))))(pair('everything', zero)));
+  }
+
+
+  // minus
+  function minus(m, n)
+  {
+    let mp = m(p => pair(succ(first(p)), p))(pair(zero, 'everything'));
+    return first(n(p => second(p))(mp));
   }
 </script>
 </body>

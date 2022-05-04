@@ -55,5 +55,11 @@
 <!--  </script>-->
 
   <script src="js/kano-common.js"></script>
+  <script src="js-plugin/html2canvas/html2canvas.min.js"></script>
+  <script>
+    html2canvas(document.querySelector(".classify")).then(canvas => {
+      document.body.appendChild(canvas)
+    });
+  </script>
 </body>
 </html>

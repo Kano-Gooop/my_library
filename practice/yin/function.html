@@ -20,7 +20,8 @@
   var circum = r => 2 * pi * r;
 
   // innerArea
-  function innerArea(a, b) {
+  function innerArea(a, b)
+  {
     let r = Math.sqrt(a * a + b * b) / 2;
     return area(r);
   }
@@ -71,7 +72,8 @@
   // console.log(four(x => x * 2)(1));
 
   // 用 compose 表达 succ
-  function compose(f, g) {
+  function compose(f, g)
+  {
     return x => f(g(x));
   }
 
@@ -189,7 +191,7 @@
     var shift = p => pair(succ(first(p)), first(p));
     return second(n(shift)(pair(zero, zero)));
   }
-  
+
   // 测试
   // console.log(toNumber(pred(three)));           // 2
   // console.log(toNumber(pred(eight)));           // 7
@@ -288,8 +290,3 @@
 </script>
 </body>
 </html>
-
-f = a => pair(succ(a), a)
-f(zero)        // p对象，存了 one, zero
-f(zero)(f)     // p对象，存了 two, one
-f(zero)(f)(f)  // p对象，存了 three, two

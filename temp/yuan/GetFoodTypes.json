@@ -1,0 +1,146 @@
+[
+  {
+    "Id": "05348054-6fa7-11e9-9b30-00163e1cb0b1",
+    "Name": "谷类",
+    "ImageUrl": "https://ushen2.oss-cn-shanghai.aliyuncs.com/common/foodType/img_cereals%402x.png",
+    "OrderNumber": 1,
+    "AddTime": "2019-05-06T10:31:16",
+    "UpdateTime": null,
+    "DFood": []
+  },
+  {
+    "Id": "053fe15e-6fa7-11e9-9b30-00163e1cb0b1",
+    "Name": "薯类淀粉类",
+    "ImageUrl": "https://ushen2.oss-cn-shanghai.aliyuncs.com/common/foodType/img_starch%402x.png",
+    "OrderNumber": 2,
+    "AddTime": "2019-05-06T10:31:16",
+    "UpdateTime": null,
+    "DFood": []
+  },
+  {
+    "Id": "054bae27-6fa7-11e9-9b30-00163e1cb0b1",
+    "Name": "豆类及豆制品",
+    "ImageUrl": "https://ushen2.oss-cn-shanghai.aliyuncs.com/common/foodType/img_beans%402x.png",
+    "OrderNumber": 3,
+    "AddTime": "2019-05-06T10:31:16",
+    "UpdateTime": null,
+    "DFood": []
+  },
+  {
+    "Id": "0556c850-6fa7-11e9-9b30-00163e1cb0b1",
+    "Name": "蔬菜类",
+    "ImageUrl": "https://ushen2.oss-cn-shanghai.aliyuncs.com/common/foodType/img_vegetables%402x.png",
+    "OrderNumber": 4,
+    "AddTime": "2019-05-06T10:31:16",
+    "UpdateTime": null,
+    "DFood": []
+  },
+  {
+    "Id": "0562fd08-6fa7-11e9-9b30-00163e1cb0b1",
+    "Name": "菌藻类",
+    "ImageUrl": "https://ushen2.oss-cn-shanghai.aliyuncs.com/common/foodType/img_mushroom%402x.png",
+    "OrderNumber": 5,
+    "AddTime": "2019-05-06T10:31:16",
+    "UpdateTime": null,
+    "DFood": []
+  },
+  {
+    "Id": "057090e1-6fa7-11e9-9b30-00163e1cb0b1",
+    "Name": "水果类",
+    "ImageUrl": "https://ushen2.oss-cn-shanghai.aliyuncs.com/common/foodType/img_fruit%402x.png",
+    "OrderNumber": 6,
+    "AddTime": "2019-05-06T10:31:16",
+    "UpdateTime": null,
+    "DFood": []
+  },
+  {
+    "Id": "057de458-6fa7-11e9-9b30-00163e1cb0b1",
+    "Name": "坚果类",
+    "ImageUrl": "https://ushen2.oss-cn-shanghai.aliyuncs.com/common/foodType/img_nut%402x.png",
+    "OrderNumber": 7,
+    "AddTime": "2019-05-06T10:31:16",
+    "UpdateTime": null,
+    "DFood": []
+  },
+  {
+    "Id": "058b7b39-6fa7-11e9-9b30-00163e1cb0b1",
+    "Name": "畜禽肉蛋",
+    "ImageUrl": "https://ushen2.oss-cn-shanghai.aliyuncs.com/common/foodType/img_meat%402x.png",
+    "OrderNumber": 8,
+    "AddTime": "2019-05-06T10:31:16",
+    "UpdateTime": null,
+    "DFood": []
+  },
+  {
+    "Id": "05989e5b-6fa7-11e9-9b30-00163e1cb0b1",
+    "Name": "乳制品类",
+    "ImageUrl": "https://ushen2.oss-cn-shanghai.aliyuncs.com/common/foodType/img_milk%402x.png",
+    "OrderNumber": 9,
+    "AddTime": "2019-05-06T10:31:16",
+    "UpdateTime": null,
+    "DFood": []
+  },
+  {
+    "Id": "05a4f486-6fa7-11e9-9b30-00163e1cb0b1",
+    "Name": "鱼虾贝类",
+    "ImageUrl": "https://ushen2.oss-cn-shanghai.aliyuncs.com/common/foodType/img_shrimp%402x.png",
+    "OrderNumber": 10,
+    "AddTime": "2019-05-06T10:31:16",
+    "UpdateTime": null,
+    "DFood": []
+  },
+  {
+    "Id": "05b3e014-6fa7-11e9-9b30-00163e1cb0b1",
+    "Name": "小吃甜点",
+    "ImageUrl": "https://ushen2.oss-cn-shanghai.aliyuncs.com/common/foodType/img_cake%402x.png",
+    "OrderNumber": 11,
+    "AddTime": "2019-05-06T10:31:16",
+    "UpdateTime": null,
+    "DFood": []
+  },
+  {
+    "Id": "05c0fe68-6fa7-11e9-9b30-00163e1cb0b1",
+    "Name": "速食食品",
+    "ImageUrl": "https://ushen2.oss-cn-shanghai.aliyuncs.com/common/foodType/img_vegetarian%402x.png",
+    "OrderNumber": 12,
+    "AddTime": "2019-05-06T10:31:17",
+    "UpdateTime": null,
+    "DFood": []
+  },
+  {
+    "Id": "05d03605-6fa7-11e9-9b30-00163e1cb0b1",
+    "Name": "饮料类",
+    "ImageUrl": "https://ushen2.oss-cn-shanghai.aliyuncs.com/common/foodType/img_drink%402x.png",
+    "OrderNumber": 13,
+    "AddTime": "2019-05-06T10:31:17",
+    "UpdateTime": null,
+    "DFood": []
+  },
+  {
+    "Id": "05de8368-6fa7-11e9-9b30-00163e1cb0b1",
+    "Name": "酒类",
+    "ImageUrl": "https://ushen2.oss-cn-shanghai.aliyuncs.com/common/foodType/img_liqueur%402x.png",
+    "OrderNumber": 14,
+    "AddTime": "2019-05-06T10:31:17",
+    "UpdateTime": null,
+    "DFood": []
+  },
+  {
+    "Id": "05ec2fd4-6fa7-11e9-9b30-00163e1cb0b1",
+    "Name": "油脂类",
+    "ImageUrl": "https://ushen2.oss-cn-shanghai.aliyuncs.com/common/foodType/img_oil%402x.png",
+    "OrderNumber": 15,
+    "AddTime": "2019-05-06T10:31:17",
+    "UpdateTime": null,
+    "DFood": []
+  },
+  {
+    "Id": "06000a66-6fa7-11e9-9b30-00163e1cb0b1",
+    "Name": "调味品类",
+    "ImageUrl": "https://ushen2.oss-cn-shanghai.aliyuncs.com/common/foodType/img_spiced%402x.png",
+    "OrderNumber": 16,
+    "AddTime": "2019-05-06T10:31:17",
+    "UpdateTime": null,
+    "DFood": []
+  }
+]

@@ -14,20 +14,24 @@
   </ul>
 
   <div>{{ xiao }}</div>
-  <div>{{ Math }}</div>
 
   <button :disabled="button_dis">按钮</button>
   <div :[attr_name1]="attr">这会是个啥</div>
   <div v-html="htm"></div>
+  <div>{{mu[1]}}</div>
+  <div>{{c}}</div>
+
+  <span v-for="i in h.fa">{{i}}</span>
 </div>
+
+<div class="other" style="background: red; display: none;">kkkkk</div>
 
 <!--<script src="/js-plugin/clipboard.min.js"></script>-->
 <!--<script src="/js-framework/jquery.min.js"></script>-->
 <!--<script src="/js-framework/vue/vue-2.6.10.js"></script>-->
+<script src="/js/kano-other.js"></script>
 <script src="/js-framework/vue/vue-3.2.29.js"></script>
 <script>
-  var a = 70;
-
   const li = {
     props: ['data'],
     template: `
@@ -39,18 +43,26 @@
       lli: li
     },
     data() {
+      let a = 18; b = 17;
+
       return {
+        h: { fa: 'kkkjj' },
+        c: a + b,
         attr_name1: 'aa',
         attr_name2: 'bb',
         attr: 'kkk',
         button_dis: true,
         xiao: 15,
+        mu: [18, 19],
         htm: '<span style="color: #b1dfbb;">kkk</span>',
         mess_list: [
           'aaa',
           'bbb',
           'ccc'
-        ]
+        ],
+        fun() {
+          console.log('腰子');
+        }
       }
     },
     beforeCreate() {
@@ -76,6 +88,11 @@
     },
     unmounted() {
       console.log('unmounted');
+    },
+    methods: {
+      aa() {
+        console.log(this);
+      }
     }
   };
 

@@ -45,7 +45,8 @@ function time_format(time, fmt = 'yyyy-MM-dd') {
       if (new RegExp("(" + k + ")").test(fmt))
         fmt = fmt.replace(RegExp.$1, (RegExp.$1.length === 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
     return fmt;
-  } else {
+  }
+  else {
     return '';
   }
 }
@@ -67,16 +68,25 @@ function second_format(second, format = 'dd天hh小时mm分ss秒') {
   s = second %= 60 + '';
 
   console.log(d, h, m, s);
-  
-  return  format.replace(/(d+)|(h+)|(m+)|(s+)/g, (match, day, hour, minute, second) => {
+
+  return format.replace(/(d+)|(h+)|(m+)|(s+)/g, (match, day, hour, minute, second) => {
     if (day) return ('0' + d).slice(-Math.max(day.length, d.length));
-    if (hour) return  ('0' + h).slice(-2);
-    if (minute) return  ('0' + m).slice(-2);
-    if (second) return  ('0' + s).slice(-2);
+    if (hour) return ('0' + h).slice(-2);
+    if (minute) return ('0' + m).slice(-2);
+    if (second) return ('0' + s).slice(-2);
   });
 }
 
 // 重复一个字符串n次
 function repeat(str, count) {
   return Array(count + 1).join(str);
+}
+
+// 将字符串转成 unicode 序列
+function unicode(str) {
+  var arr = []
+  for (var i = 0; i < str.length; i++) {
+    arr.push(str.charCodeAt(i).toString(16));
+  }
+  return arr;
 }
