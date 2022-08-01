@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<script>
+  // area
+  var pi = Math.PI;
+  var area = r => pi * r * r;
+
+
+  // circum
+  var circum = r => 2 * pi * r;
+
+
+  // innerArea
+  function innerArea(a, b)
+  {
+    let r = Math.sqrt(a * a + b * b) / 2;
+    return area(r);
+  }
+
+
+  // two
+  // var two = f => x => f(f(x));
+
+
+  // three, four
+  // var three = f => x => f(f(f(x)));
+  // var four = f => x => f(f(f(f(x))));
+
+
+  // succ
+  // function succ(n)
+  // {
+  //   return f => x => f(n(f)(x));
+  // }
+
+  // var three = succ(two);
+  // var four = succ(three);
+  // var five = succ(four);
+
+
+  // 用 compose 表达 succ
+  function compose(f, g)
+  {
+    return x => f(g(x));
+  }
+
+  function succ(n)
+  {
+    return f => compose(f, n(f));
+  }
+
+
+  // toNumber
+  function toNumber(n)
+  {
+    return n(x => x + 1)(0);
+  }
+
+
+  // zero
+  var zero = f => x => x;
+  var one = succ(zero);
+  var two = succ(one);
+  var three = succ(two);
+  var four = succ(three);
+  var five = succ(four);
+  var six = succ(five);
+  var seven = succ(six);
+  var eight = succ(seven);
+  var nine = succ(eight);
+
+
+  // plus
+  // function plus(m, n)
+  // {
+  //   return f => x => n(f)(m(f)(x));
+  // }
+
+
+  // 用 compose 表达 plus
+  function plus(m, n)
+  {
+    return f => compose(n(f), m(f));
+  }
+
+
+  // mult
+  // function mult(m, n)
+  // {
+  //   return f => n(m(f));
+  // }
+
+
+  // 用 compose 表达 mult
+  var mult = compose;
+
+
+  // pow
+  function pow(m, n)
+  {
+    return n(m);
+  }
+
+
+  // pair
+
+</script>
+</body>
+</html>

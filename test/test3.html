@@ -9,11 +9,20 @@
 </head>
 <body>
 <script>
-  let ben = 1000;
-  for (let i = 1; i < 360; i++) {
-    ben = (ben * (1 + 0.05 / 12)) + 1000;
+  function frequency(str)
+  {
+    let obj = [];
+
+    for (let char of str) {
+      if (!obj[char]) {
+        obj[char] = 1;
+      } else {
+        obj[char]++;
+      }
+    }
+
+    return obj;
   }
-  console.log(ben);
 </script>
 </body>
 </html>

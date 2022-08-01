@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Fast-growing hierarchy</title>
+</head>
+<body>
+<script>
+  function fgh(n, a)
+  {
+    if (a === 0)
+    {
+      return n + 1;
+    }
+    else
+    {
+      // return fgh(n, a - 1);
+    }
+  }
+
+  function number(n)
+  {
+    if (n === 1)
+    {
+      return f => f;
+    }
+    else
+    {
+      return f => x => f(number(n - 1)(f)(x));
+    }
+  }
+</script>
+</body>
+</html>

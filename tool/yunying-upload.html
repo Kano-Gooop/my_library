@@ -6,14 +6,21 @@
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Document</title>
+  <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
   <style>
     #app {
       padding: 30px;
     }
 
+    .select {
+      display: block;
+      width: 200px;
+      margin-bottom: 15px;
+    }
+
     .filename-box {
       margin-top: 23px;
-      width: 1000px;
+      width: 1200px;
       font-size: 16px;
     }
 
@@ -74,6 +81,11 @@
 </head>
 <body>
 <div id="app">
+  <el-select v-model="server" placeholder="选择服务器" class="select">
+    <el-option label="通用" value="https://file.moss.wingoing.cn/fm/upload"></el-option>
+    <el-option label="长生" value="https://wxc627fe67f1e42564.mosspage.wingoing.cn/fm//upload"></el-option>
+  </el-select>
+
   <input type="file" multiple ref="file"/>
   <input @click="upload_click" type="button" value="上传"/>
 
@@ -102,10 +114,12 @@
 <script src="/js-plugin/clipboard.min.js"></script>
 <script src="/js-framework/jquery.min.js"></script>
 <script src="/js-framework/vue/vue-2.6.10.js"></script>
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
 <script>
-  new Vue({
+  let app = new Vue({
     el: '#app',
     data: {
+      server: 'https://file.moss.wingoing.cn/fm/upload',
       filename_list: []
     },
     mounted()
@@ -156,8 +170,7 @@
 
           $.ajax({
             type: 'post',
-            // url: 'https://file.moss.wingoing.cn/fm/upload',  // 通用
-            url: 'https://wxc627fe67f1e42564.mosspage.wingoing.cn/fm//upload',  // 长生
+            url: this.server,  // 通用
             data: formData,
             dataType: 'json',
             contentType: false,
@@ -178,3 +191,4 @@
 </script>
 </body>
 </html>
+

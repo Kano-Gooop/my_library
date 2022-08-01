@@ -5,99 +5,19 @@
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>test</title>
+  <title>Document</title>
+  <style>
+    iframe {
+      width: 500px;
+      height: 200px;
+    }
+  </style>
 </head>
 <body>
-<div id="app">
-  <ul>
-    <lli v-for="item in mess_list" v-bind:data="item"></lli>
-  </ul>
-
-  <div>{{ xiao }}</div>
-
-  <button :disabled="button_dis">按钮</button>
-  <div :[attr_name1]="attr">这会是个啥</div>
-  <div v-html="htm"></div>
-  <div>{{mu[1]}}</div>
-  <div>{{c}}</div>
-
-  <span v-for="i in h.fa">{{i}}</span>
-</div>
-
-<div class="other" style="background: red; display: none;">kkkkk</div>
-
-<!--<script src="/js-plugin/clipboard.min.js"></script>-->
-<!--<script src="/js-framework/jquery.min.js"></script>-->
-<!--<script src="/js-framework/vue/vue-2.6.10.js"></script>-->
-<script src="/js/kano-other.js"></script>
-<script src="/js-framework/vue/vue-3.2.29.js"></script>
+<script src="/js/kano-common.js"></script>
 <script>
-  const li = {
-    props: ['data'],
-    template: `
-      <li>{{ data }}</li>`
-  }
-
-  const root_component = {
-    components: {
-      lli: li
-    },
-    data() {
-      let a = 18; b = 17;
-
-      return {
-        h: { fa: 'kkkjj' },
-        c: a + b,
-        attr_name1: 'aa',
-        attr_name2: 'bb',
-        attr: 'kkk',
-        button_dis: true,
-        xiao: 15,
-        mu: [18, 19],
-        htm: '<span style="color: #b1dfbb;">kkk</span>',
-        mess_list: [
-          'aaa',
-          'bbb',
-          'ccc'
-        ],
-        fun() {
-          console.log('腰子');
-        }
-      }
-    },
-    beforeCreate() {
-      console.log(this, this.xiao, '王八', this.$el);
-    },
-    created() {
-      console.log('xiao是：' + this.xiao, this.$el);
-    },
-    beforeMount() {
-      console.log('beforeMount');
-    },
-    mounted() {
-      console.log('$el', this.$el);
-    },
-    beforeUpdate() {
-      console.log('beforeUpdate', new Date().getTime());
-    },
-    updated() {
-      console.log('updated', new Date().getTime());
-    },
-    beforeUnmount() {
-      console.log('beforeUnmount');
-    },
-    unmounted() {
-      console.log('unmounted');
-    },
-    methods: {
-      aa() {
-        console.log(this);
-      }
-    }
-  };
-
-  const app = Vue.createApp(root_component);
-  vm = app.mount('#app');
+  let obj = {a: 50, b: 80, c: 90};
+  let {b, ...ha} = obj;
 </script>
 </body>
 </html>
