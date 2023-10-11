@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>拖放例子</title>
+</head>
+<style>
+
+</style>
+<body>
+<ul id="draggable-list">
+  <li draggable="true">Item 1</li>
+  <li draggable="true">Item 2</li>
+  <li draggable="true">Item 3</li>
+  <li draggable="true">Item 4</li>
+  <li draggable="true">Item 5</li>
+</ul>
+
+<script src="/js/kano-common.js"></script>
+<script>
+  var list = document.getElementById('draggable-list');
+
+  // This variable will hold the li element currently being dragged.
+  var draggingEle;
+
+  // This will hold the space for the currently being dragged element.
+  var placeholder;
+
+  list.addEventListener('dragstart', function(e) {
+    draggingEle = e.target;
+    e.dataTransfer.setData('text/html', draggingEle);
+  }, false);
+
+  list.addEventListener('dragover', function(e) {
+    e.preventDefault();
+    var currentTarget = closest(e.target, 'li');
+    if (currentTarget && draggingEle !== currentTarget) {
+      list.insertBefore(draggingEle, closest(e.target, 'li') === draggingEle.nextElementSibling ? currentTarget.nextElementSibling : currentTarget);
+    }
+  }, false);
+
+  list.addEventListener('dragend', function(e) {
+    draggingEle.style.display = draggingEle.previousElementSibling ? 'list-item' : 'none';
+    draggingEle.parentNode.removeChild(placeholder);
+    placeholder = null;
+    draggingEle = null;
+  }, false);
+
+  function closest(target, tagName) {
+    while (target) {
+      if (target.tagName.toLowerCase() === tagName) {
+        return target;
+      }
+      target = target.parentNode;
+    }
+    return null;
+  }
+</script>
+</body>
+</html>

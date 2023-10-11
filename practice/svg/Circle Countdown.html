@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Circle Countdown</title>
+  <style>
+    /* style.css */
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f0f0f0;
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    .circle-container {
+      position: relative;
+      width: 150px;
+      height: 150px;
+    }
+
+    .circle-svg {
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    .circle-bg {
+      /*stroke: #f0f0f0;*/
+      /*stroke: red;*/
+    }
+
+    .circle-fg {
+      stroke: #000;
+      transform-origin: 50% 50%;
+      transform: rotate(-90deg) scaleY(-1);
+      /*filter: blur(10px);*/
+    }
+
+    .timer-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      font-size: 2.5em;
+      font-weight: bold;
+      color: #000;
+      transform: translate(-50%, -50%);
+    }
+
+  </style>
+</head>
+<body>
+<div class="circle-container">
+  <svg class="circle-svg" width="150" height="150">
+    <!--		<div class="circle-bg"></div>-->
+    <circle class="circle-bg" cx="75" cy="75" r="70" fill="#3498db"></circle>
+    <circle class="circle-fg" cx="75" cy="75" r="70" stroke-width="70" fill="none" stroke-opacity="0.7" stroke-dasharray="439.1123352050781"></circle>
+  </svg>
+  <span class="timer-text">5</span>
+</div>
+<script>
+  // script.js
+  const timerText = document.querySelector('.timer-text');
+  const circleFg = document.querySelector('.circle-fg');
+  const totalDuration = 500;
+  let countdown = totalDuration;
+
+  // paint();
+  const countdownInterval = setInterval(() => {
+    paint()
+  }, 10);
+
+  function paint() {
+    countdown--;
+    timerText.textContent = parseInt(countdown / 100);
+
+    const dashOffset = (circleFg.getTotalLength() / totalDuration) * (totalDuration - countdown);
+    circleFg.setAttribute('stroke-dashoffset', dashOffset);
+
+    if (countdown === 0) {
+      clearInterval(countdownInterval);
+    }
+  }
+</script>
+</body>
+</html>

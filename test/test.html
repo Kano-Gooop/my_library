@@ -2,22 +2,45 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport"
-        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Document</title>
+  <title>叽叽叽叽</title>
   <style>
-    iframe {
-      width: 500px;
-      height: 200px;
-    }
   </style>
 </head>
 <body>
+<div id="aa">
+
+</div>
+<script src="/js/framework/jquery/jquery.min.js"></script>
 <script src="/js/kano-common.js"></script>
-<script>
-  let obj = {a: 50, b: 80, c: 90};
-  let {b, ...ha} = obj;
+<script type="module">
+  import obj from './test.js';
+
+  window.obj = obj;
+
+  setTimeout(() => {
+    obj.a = 99;
+    obj.b = 99;
+    console.log(obj);
+  }, 3000);
+
+  $.ajax({
+    type: 'post',
+    url: 'https://think51.123456372.xyz/index/rr/response',  // 通用
+    // headers: {
+    //   'HTTP_X_REQUESTED_WITH': 'xmlhttprequest'
+    // },
+    data: {},
+    dataType: 'json',
+    contentType: false,
+    processData: false,
+    success(res) {
+      console.log(res);
+    },
+    error(err) {
+      // 发生错误，上传失败
+    }
+  })
+
 </script>
 </body>
 </html>

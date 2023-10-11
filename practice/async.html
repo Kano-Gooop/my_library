@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>异步</title>
+  <style>
+    #wang {
+      width: 200px;
+      height: 200px;
+      border: 2px solid #000;
+    }
+  </style>
+</head>
+<body>
+<div id="wang">这是个div</div>
+<script>
+  new Promise((resolve) => {
+    console.log('打印个东西');
+    resolve();
+  }).then(() => {
+    return new Promise((resolve) => {
+      console.log('打印个东西2');
+      setTimeout(() => {
+        console.log('打印个东西4');
+        resolve();
+      }, 2000);
+    });
+  }).then(() => {
+    console.log('打印个东西3');
+  });
+</script>
+</body>
+</html>

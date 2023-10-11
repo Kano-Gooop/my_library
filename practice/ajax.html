@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Ajax例子</title>
+</head>
+<body>
+<script src="/js/framework/jquery/jquery-3.4.1.min.js"></script>
+<script src="/js/kano-common.js"></script>
+<script>
+  // 通过jsonp的方式返回数据
+  function jsonpReturn(res) {
+    console.log(res, '返回的数据');
+  }
+  load_script('https://think51.123456372.xyz/index/index/response/type/jsonp');
+
+  // 最简单的ajax例子
+  $.ajax({
+    type: 'post',
+    headers: {'X-Requested-With': 'XMLHttpRequest'},
+    url: 'https://think51.123456372.xyz/index/index/response2',
+    success(res) {
+      console.log(res, 'post 返回的数据');
+    }
+  });
+</script>
+</body>
+</html>

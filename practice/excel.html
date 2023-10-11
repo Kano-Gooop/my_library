@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>叽叽叽叽</title>
+  <style>
+  </style>
+</head>
+<body>
+<input type="file" onchange="read(this.files[0])"/><br>
+
+<script src="/js/framework/jquery/jquery.min.js"></script>
+<script src="/js/kano-common.js"></script>
+<script lang="javascript" src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+<script>
+  // 从文件数据中解析出excel内容
+  function parse(data) {
+    const workbook = XLSX.read(data); // 从原始数据获取工作簿
+                                      // 后端使用可以使用 readFile() 方法直接读取文件
+
+    var first_sheet_name = workbook.SheetNames[0]; // 获得第一个工作表名称
+
+    const worksheet = workbook.Sheets[first_sheet_name]; // 获取工作表
+
+    // console.log(worksheet['A1']); // 读取并打印A1端元格数据
+    //
+    // console.log(worksheet['!merges']); // 打印所有合并单元格信息数组
+    //
+    // console.log(worksheet['!ref']); // 打印输出当前工作表使用的范围
+
+    let json = [];
+    for (let r = 1; r <= 32; r++) {
+      // json[r - 1] = [];
+
+      json[r - 1] = {
+        title: worksheet['A' + r].v,
+        new_title: worksheet['B' + r].v,
+        tags: [
+          {
+            tag: worksheet['C' + r].v,
+            sort: worksheet['D' + r].v
+          },
+          {
+            tag: worksheet['E' + r].v,
+            sort: worksheet['F' + r].v
+          }
+        ],
+        link: worksheet['G' + r].v
+      };
+      // for (let c = 0; c < 6; c++) {
+      //   let cell = worksheet[String.fromCharCode(c + 65) + r];
+      //   json[r - 1][c] = cell.v;
+      // }
+    }
+
+    console.log(json);
+  }
+
+  // 读取文件数据
+  function read(file) {
+    let reader = new FileReader();
+    reader.onload = function (e) {
+      parse(e.target.result);
+    };
+    reader.readAsArrayBuffer(file);
+  }
+
+  XLSX.utils.sheet_to_json()
+</script>
+</body>
+</html>

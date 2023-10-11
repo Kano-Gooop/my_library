@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <title>这是标题</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      border: 0;
+    }
+
+    div {
+      box-sizing: border-box;
+    }
+
+    .vh {
+      visibility: hidden;
+    }
+
+    /* ------------------------------------------------ */
+
+    .main {
+      padding: 3vw;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+
+    .main .btn {
+      width: 27vw;
+      height: 27vw;
+      background-color: #EBCBAE;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3vw;
+      padding: 1.5vw;
+      line-height: 1.4;
+    }
+
+    .main .btn:nth-child(n + 4) {
+      margin-top: 6.5vw;
+    }
+  </style>
+</head>
+<body>
+<div class="main">
+  <div class="btn" id="shareWebPage">分享给微信好友</div>
+  <div class="btn" id="shareTimeLine">分享到朋友圈</div>
+  <div class="btn" id="shareWeibo">分享到微博</div>
+  <div class="btn" id="jumpTab">跳转到tabbar</div>
+  <div class="btn" id="getUserLoginStatus">获取用户登录状态</div>
+  <div class="btn" id="getUserInfo">获取用户信息</div>
+  <div class="btn" id="getLanguage">获取语言环境</div>
+  <div class="btn" id="wxpay">微信支付</div>
+  <div class="btn" id="alipay">支付宝支付</div>
+  <div class="btn" id="scanCode">扫二维码</div>
+  <div class="btn" id="setStorage">存储Storage</div>
+  <div class="btn" id="getStorage">获取Storage</div>
+  <div class="btn" id="toLogin">登出并跳转登录页面</div>
+  <div class="btn" id="closePage">关闭当前h5</div>
+  <div class="btn" id="CamerechooseImage">拉起摄像头选择图片</div>
+  <div class="btn" id="albumChooseImage">拉起相册选择图片</div>
+  <div class="btn" id="logout">登出</div>
+  <div class="btn vh"></div>
+</div>
+<!-- uni 的 SDK -->
+<!-- 需要把 uni.webview.1.5.4.js 下载到自己的服务器 -->
+<script type="text/javascript" src="/js/uni/uni.webview.1.5.4.js"></script>
+<script type="text/javascript">
+  // 待触发 `UniAppJSBridgeReady` 事件后，即可调用 uni 的 API。
+  document.addEventListener('UniAppJSBridgeReady', function () {
+    // 分享给微信好友
+    document.getElementById('shareWebPage').addEventListener('click', function () {
+      uni.postMessage({
+        data: {
+          funName: 'share',
+          data: {
+            provider: "weixin",
+            scene: "WXSceneSession",  // 聊天界面
+            href: "http://uniapp.dcloud.io/",  // 跳转地址
+            title: "分享标题",
+            imageUrl: "https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/uni@2x.png"
+          }
+        }
+      });
+    });
+
+    // 分享到朋友圈
+    document.getElementById('shareTimeLine').addEventListener('click', function () {
+      uni.postMessage({
+        data: {
+          funName: 'share',
+          data: {
+            provider: "weixin",
+            scene: "WXSceneTimeline",  // 朋友圈
+            href: "http://uniapp.dcloud.io/",  // 跳转地址
+            title: "分享标题",
+            imageUrl: "https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/uni@2x.png"
+          }
+        }
+      });
+    });
+
+    // 分享到微博
+    document.getElementById('shareWeibo').addEventListener('click', function () {
+      uni.postMessage({
+        data: {
+          funName: 'share',
+          data: {
+            provider: "sinaweibo",
+            title: "分享标题",
+            imageUrl: "https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/uni@2x.png"
+          }
+        }
+      });
+    });
+
+    // 跳转到tabbar
+    document.getElementById('jumpTab').addEventListener('click', function () {
+      uni.postMessage({
+        data: {
+          funName: 'jumpTab',
+          data: {
+            index: 0  // 0.首页, 1.我的 2.菜单 3.搜索 4.更多 5.清除登录状态并跳转登录页 6.关闭当前h5容器
+          }
+        }
+      });
+    });
+
+    // 获取用户登录状态
+    document.getElementById('getUserLoginStatus').addEventListener('click', function () {
+      uni.postMessage({
+        data: {
+          funName: 'getUserLoginStatus'
+        }
+      });
+    });
+
+    // 获取用户信息
+    document.getElementById('getUserInfo').addEventListener('click', function () {
+      uni.postMessage({
+        data: {
+          funName: 'getUserInfo'
+        }
+      });
+    });
+
+    // 获取语言环境
+    document.getElementById('getLanguage').addEventListener('click', function () {
+      uni.postMessage({
+        data: {
+          funName: 'getLanguage'
+        }
+      });
+    });
+
+    // 微信支付
+    document.getElementById('wxpay').addEventListener('click', function () {
+      uni.postMessage({
+        data: {
+          funName: 'wxpay',
+          data: {
+            orderInfo: {
+              "appid": "wx499********7c70e",  // 微信开放平台 - 应用 - AppId，注意和微信小程序、公众号 AppId 可能不一致
+              "noncestr": "c5sEwbaNPiXAF3iv", // 随机字符串
+              "package": "Sign=WXPay",        // 固定值
+              "partnerid": "148*****52",      // 微信支付商户号
+              "prepayid": "wx202254********************fbe90000", // 统一下单订单号
+              "timestamp": 1597935292,        // 时间戳（单位：秒）
+              "sign": "A842B45937F6EFF60DEC7A2EAA52D5A0" // 签名，这里用的 MD5/RSA 签名
+            }
+          }
+        }
+      });
+    });
+
+    // 支付宝支付
+    document.getElementById('alipay').addEventListener('click', function () {
+      uni.postMessage({
+        data: {
+          funName: 'alipay',
+          data: {
+            orderInfo: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxx'
+          }
+        }
+      });
+    });
+
+    // 扫二维码
+    document.getElementById('scanCode').addEventListener('click', function () {
+      uni.postMessage({
+        data: {
+          funName: 'scanCode'
+        }
+      });
+    });
+
+    // 存储Storage
+    document.getElementById('setStorage').addEventListener('click', function () {
+      uni.postMessage({
+        data: {
+          funName: 'setStorage',
+          key: 'token',
+          data: 'aaabbbccc'
+        }
+      });
+    });
+
+    // 获取Storage
+    document.getElementById('getStorage').addEventListener('click', function () {
+      uni.postMessage({
+        data: {
+          funName: 'setStorage',
+          key: 'token'
+        }
+      });
+    });
+
+    // 登出并跳转登录页面
+    document.getElementById('jumpTab').addEventListener('click', function () {
+      uni.postMessage({
+        data: {
+          funName: 'jumpTab',
+          data: {
+            index: 5  // 0.首页, 1.我的 2.菜单 3.搜索 4.更多 5.清除登录状态并跳转登录页 6.关闭当前h5容器
+          }
+        }
+      });
+    });
+
+    // 关闭当前h5
+    document.getElementById('jumpTab').addEventListener('click', function () {
+      uni.postMessage({
+        data: {
+          funName: 'jumpTab',
+          data: {
+            index: 6  // 0.首页, 1.我的 2.菜单 3.搜索 4.更多 5.清除登录状态并跳转登录页 6.关闭当前h5容器
+          }
+        }
+      });
+    });
+
+    // 选择图片（拉起摄像头）
+    document.getElementById('CamerechooseImage').addEventListener('click', function () {
+      uni.postMessage({
+        data: {
+          funName: 'chooseImage',
+          data: {
+            sourceType: 'camera'
+          }
+        }
+      });
+    });
+
+    // 选择图片（拉起相册）
+    document.getElementById('albumChooseImage').addEventListener('click', function () {
+      uni.postMessage({
+        data: {
+          funName: 'chooseImage',
+          data: {
+            sourceType: 'album'
+          }
+        }
+      });
+    });
+  });
+
+  window.addEventListener('message', function (e) {
+    switch (e.data.funName) {
+      case 'getUserLoginStatus':
+        console.log('用户登录状态', e.data.data);
+        break;
+      case 'getUserInfo':
+        console.log('用户信息', e.data.data);
+        break;
+      case 'scanCode':
+        // 值为扫码结果string
+        console.log('二维码string', e.data.data);
+        break;
+      case 'getLanguage':
+        // 值返回 zh 或 en
+        console.log('语言环境', e.data.data);
+        break;
+      case 'wxpay':
+        // 微信支付回调，返回支付结果
+        console.log('微信支付结果', e.data.data);
+        break;
+      case 'alipay':
+        // 支付宝支付回调，返回支付结果
+        console.log('支付宝支付结果', e.data.data);
+        break;
+      case 'getStorage':
+        // 数据格式 { key: 'xxx', value: 'xxxxxxxxxxxxxxxx' }
+        console.log('存储的storage', e.data.data);
+        break;
+      case 'chooseImage':
+        console.log('选择图片结果', e.data.data);
+        break;
+    }
+  });
+</script>
+</body>
+</html>

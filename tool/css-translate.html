@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>test</title>
+</head>
+<body>
+啊啊啊啊
+<script>
+  // 总之核心就是这个
+  let str = `  .search-box {
+    flex-shrink: 0;
+    background-color: #fff;
+    padding: 16rpx 32rpx;
+    display: flex;
+    align-items: center;
+
+    .search {
+      background-color: #f3f3f3;
+      border-radius: 12rpx;
+      display: flex;
+      align-items: center;
+      height: 80rpx;
+      flex-grow: 1;
+      padding-left: 24rpx;
+
+      .search-icon {
+        width: 48rpx;
+        height: 48rpx;
+      }
+
+      input {
+        margin-left: 8rpx;
+        flex-grow: 1;
+        font-size: 32rpx;
+      }
+
+      .close {
+        margin-left: 8rpx;
+        padding: 0 16rpx;
+
+        .icon {
+          width: 48rpx;
+          height: 48rpx;
+        }
+      }
+    }
+
+    .btn {
+      padding-left: 32rpx;
+      font-size: 32rpx;
+      color: var(--blue);
+      flex-shrink: 0;
+    }
+  }
+
+  .recent {
+    flex-grow: 1;
+    background-color: #f3f3f3;
+    padding: 56rpx 24rpx;
+
+    .title {
+      font-size: 30rpx;
+      line-height: 48rpx;
+      color: #898A8B;
+      padding: 0 8rpx;
+    }
+
+    .list {
+      margin-top: 10rpx;
+      font-size: 28rpx;
+      color: #898A8B;
+
+      .item {
+        padding: 20rpx 8rpx;
+        border-bottom: 2rpx solid #E3E3E3;
+        line-height: 48rpx;
+      }
+    }
+  }
+
+  .result-list {
+    flex-grow: 1;
+    background-color: #f3f3f3;
+    padding: 56rpx 24rpx;
+
+    .title {
+      font-size: 30rpx;
+      line-height: 48rpx;
+      color: #898A8B;
+      padding: 0 8rpx;
+    }
+
+    .list {
+      margin-top: 10rpx;
+      font-size: 28rpx;
+      color: #898A8B;
+
+      .item {
+        padding: 20rpx 8rpx;
+        border-bottom: 2rpx solid #E3E3E3;
+        line-height: 48rpx;
+
+        .high {
+          color: var(--blue);
+        }
+      }
+    }
+  }`;
+
+  let new_str = str.replace(/(\d+(\.\d+)?)rpx/g, (r, sub1) => {
+    return parseFloat(Number(sub1) / 7.5).toFixed(2) + 'vw';
+  });
+  
+  console.log(new_str);
+</script>
+</body>
+</html>

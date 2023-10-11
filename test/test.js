@@ -1,1 +1,4 @@
-console.log('hello world');
+export default {
+  a: 25,
+  b: 38
+}

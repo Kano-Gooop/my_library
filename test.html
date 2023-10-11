@@ -1,114 +1,40 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Title</title>
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
 </head>
 <body>
+<input oninput="limitInput(this)" type="text" />
 <script>
-  // area
-  var pi = Math.PI;
-  var area = r => pi * r * r;
-
-
-  // circum
-  var circum = r => 2 * pi * r;
-
-
-  // innerArea
-  function innerArea(a, b)
-  {
-    let r = Math.sqrt(a * a + b * b) / 2;
-    return area(r);
+  function limitInput(e) {
+    e.value = ('' + e.value) // 第一步：转成字符串
+      .replace(/[^\d.-]+/g, '') // 第二步：把不是数字，不是小数点的过滤掉
+      .replace(/^0+(\d)/, '$1') // 第三步：第一位0开头，0后面为数字，则过滤掉，取后面的数字
+      .replace(/^(-?)\./, '$10.') // 第四步：如果输入的第一位为小数点，则替换成 0. 实现自动补全
+      .match(/^-?\d*(\.?\d{0,2})/g)[0] || '' // 第五步：最终匹配得到结果 以数字开头，只有一个小数点，  而且小数点后面只能有0到2位小数
   }
 
+  let trackedElements = new Set();
 
-  // two
-  // var two = f => x => f(f(x));
-
-
-  // three, four
-  // var three = f => x => f(f(f(x)));
-  // var four = f => x => f(f(f(f(x))));
-
-
-  // succ
-  // function succ(n)
-  // {
-  //   return f => x => f(n(f)(x));
-  // }
-
-  // var three = succ(two);
-  // var four = succ(three);
-  // var five = succ(four);
-
-
-  // 用 compose 表达 succ
-  function compose(f, g)
-  {
-    return x => f(g(x));
+  function trackElementWithListener(elem) {
+    elem.addEventListener('click', function() {
+      console.log('Element clicked!');
+    });
+    trackedElements.add(elem);
   }
 
-  function succ(n)
-  {
-    return f => compose(f, n(f));
-  }
+  let div = document.createElement('div');
+  trackElementWithListener(div);
 
+  // ... 其他代码 ...
 
-  // toNumber
-  function toNumber(n)
-  {
-    return n(x => x + 1)(0);
-  }
-
-
-  // zero
-  var zero = f => x => x;
-  var one = succ(zero);
-  var two = succ(one);
-  var three = succ(two);
-  var four = succ(three);
-  var five = succ(four);
-  var six = succ(five);
-  var seven = succ(six);
-  var eight = succ(seven);
-  var nine = succ(eight);
-
-
-  // plus
-  // function plus(m, n)
-  // {
-  //   return f => x => n(f)(m(f)(x));
-  // }
-
-
-  // 用 compose 表达 plus
-  function plus(m, n)
-  {
-    return f => compose(n(f), m(f));
-  }
-
-
-  // mult
-  // function mult(m, n)
-  // {
-  //   return f => n(m(f));
-  // }
-
-
-  // 用 compose 表达 mult
-  var mult = compose;
-
-
-  // pow
-  function pow(m, n)
-  {
-    return n(m);
-  }
-
-
-  // pair
-
+  // 最后，你决定不再需要这个 div 元素
+  trackedElements.delete(div);
+  div = null;
 </script>
 </body>
 </html>

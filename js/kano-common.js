@@ -13,18 +13,21 @@ const reg = {
 };
 
 // 获取url参数对象
-function get_params()
-{
-  let url = location.search;
+function get_params(url) {
+  // let url = location.search;
+  let search;
+  if (url) {
+    [, search] = url.split('?');
+  } else {
+    search = location.search.substr(1);
+  }
+
   let params = {};
-  if (url.indexOf("?") !== -1)
-  {
-    var str = url.substr(1);
-    var strs = str.split("&");
-    for (var i = 0; i < strs.length; i++)
-    {
+  if (search) {
+    var strs = search.split("&");
+    for (var i = 0; i < strs.length; i++) {
       let kv = strs[i].split('='); // key 和 value
-      params[kv[0]] = unescape(kv[1]);
+      params[kv[0]] = decodeURIComponent(kv[1]);
     }
   }
   return params;
@@ -36,14 +39,11 @@ function get_params()
  * @param fmt  格式化字符串
  * @returns {string}  返回格式化后的字符串
  */
-function time_format(time, fmt = 'yyyy-MM-dd')
-{
-  if (time)
-  {
+function time_format(time, fmt = 'yyyy-MM-dd') {
+  if (time) {
     // 如果是数字类型
-    if (typeof time === 'number')
-    {
-      time = new Date(time * 1000);
+    if (typeof time === 'number') {
+      time = new Date(time);
     }
 
     var o = {
@@ -61,9 +61,7 @@ function time_format(time, fmt = 'yyyy-MM-dd')
       if (new RegExp("(" + k + ")").test(fmt))
         fmt = fmt.replace(RegExp.$1, (RegExp.$1.length === 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
     return fmt;
-  }
-  else
-  {
+  } else {
     return '';
   }
 }
@@ -74,8 +72,7 @@ function time_format(time, fmt = 'yyyy-MM-dd')
  * @param format  格式化字符串
  * @returns {string}  被格式化的字符串
  */
-function second_format(second, format = 'dd天hh小时mm分ss秒')
-{
+function second_format(second, format = 'dd天hh小时mm分ss秒') {
   let d, h, m, s;  // 日 小时 分钟 秒
 
   d = Math.floor(second / 86400) + '';
@@ -87,8 +84,7 @@ function second_format(second, format = 'dd天hh小时mm分ss秒')
 
   console.log(d, h, m, s);
 
-  return format.replace(/(d+)|(h+)|(m+)|(s+)/g, (match, day, hour, minute, second) =>
-  {
+  return format.replace(/(d+)|(h+)|(m+)|(s+)/g, (match, day, hour, minute, second) => {
     if (day) return ('0' + d).slice(-Math.max(day.length, d.length));
     if (hour) return ('0' + h).slice(-2);
     if (minute) return ('0' + m).slice(-2);
@@ -97,38 +93,72 @@ function second_format(second, format = 'dd天hh小时mm分ss秒')
 }
 
 // 重复一个字符串n次
-function repeat(str, count)
-{
+function repeat(str, count) {
   return Array(count + 1).join(str);
 }
 
 // 将字符串转成 unicode 序列
-function unicode(str)
-{
+function unicode(str) {
   var arr = []
-  for (var i = 0; i < str.length; i++)
-  {
+  for (var i = 0; i < str.length; i++) {
     arr.push(str.charCodeAt(i).toString(16));
   }
   return arr;
 }
 
 // 统计字符串中各个字符出现的频率
-function frequency(str)
-{
+function frequency(str) {
   let obj = [];
 
-  for (let char of str)
-  {
-    if (!obj[char])
-    {
+  for (let char of str) {
+    if (!obj[char]) {
       obj[char] = 1;
-    }
-    else
-    {
+    } else {
       obj[char]++;
     }
   }
 
   return obj;
+}
+
+// 深克隆
+function deep_clone(target) {
+  let result;
+  if (typeof target === 'object') {
+    if (Array.isArray(target)) {
+      result = [];
+      for (let i in target) {
+        result.push(deep_clone(target[i]))
+      }
+    } else if (target === null) {
+      result = null;
+    } else if (target.constructor === RegExp) {
+      result = target;
+    } else {
+      result = {};
+      for (let i in target) {
+        result[i] = deep_clone(target[i]);
+      }
+    }
+  } else {
+    result = target;
+  }
+  return result;
+}
+
+// 动态添加一个<script>
+function load_script(url) {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src = url;
+  document.getElementsByTagName('head')[0].appendChild(script);
+}
+
+// 随机整数
+function random_integer(amount, min = 0, max = 10000) {
+  let arr = [];
+  for (let i = 0; i < amount; i++) {
+    arr.push(Math.floor(Math.random() * (max - min + 1)) + min);
+  }
+  return arr;
 }

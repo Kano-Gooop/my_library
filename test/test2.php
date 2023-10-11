@@ -1,8 +1,4 @@
 <?php
 
-$tmpArr = array('worinima', '1626951933', '454320100');
-sort($tmpArr, SORT_STRING);
-$tmpStr = implode($tmpArr);
-$tmpStr = sha1($tmpStr);
-
-echo $tmpStr;
+$arr = [1, 2, 3];
+var_dump($arr[1]);
